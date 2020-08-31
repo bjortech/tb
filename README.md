@@ -30,7 +30,7 @@ Nodes for creation of 2d plan by move_base. Nodes for interpolation,elevation an
 Node for receiving std_msgs::String msg that will be used as if in a terminal. Some commands are hard to automate through conventional API, this is a cheap workaround. 
 
 # TB_ASSEMBLY:
-Node that accumulate laser_assembler/AssembleScans2 for usage at desired rate
+Node that accumulate laser_assembler/AssembleScans2 for usage at desired rate. It also rewrites the frame_id of 2d_scans taken at current altitude for usage in the project 2d navigation. 
 
 # TB_MBCLIENT: 
 Move_base action client
