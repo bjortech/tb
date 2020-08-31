@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node name="tb_cmd_actuate_node" 	pkg="tb_cmd" type="tb_cmd_actuate_node"	 respawn="true"/>
+	<node name="tb_cmd_exequte_pid_node" 	pkg="tb_cmd" type="tb_cmd_exequte_pid_node"	 respawn="true"/>
+	<node name="tb_cmd_setpoint_node" pkg="tb_cmd" type="tb_cmd_setpoint_node" respawn="true"/>
+	<node name="tb_cmd_setpoint_path_node" pkg="tb_cmd" type="tb_cmd_setpoint_path_node" respawn="true"/>
+</launch>
