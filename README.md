@@ -19,11 +19,24 @@ Sice latest tests have been with DJI, DJI-generic topics for attitude, altitude 
 that will function as joint_state_publisher- but it will also respond to actuator commands (never figured how to do this without the GUI on JSP). 
 
 # TB_CMD: 
-This is a setpoint publisher (and actuator commands - an unfinished node). To get the setpoints I have utilized two approaches. 
+This is a setpoint publisher. To get the setpoints I have utilized two approaches. 
 1) Simulation of cmd_vel from move_base. 
 2) Use of "make_plan"-service rather than using move_base action. The planned path needs to be elevated and interpolated. 
 
-# TB_PATHMAKE: 
-Nodes for interpolation, elevation and smoothing of paths created by move_base. 
+# TB_PATHMAKER: 
+Nodes for creation of 2d plan by move_base. Nodes for interpolation,elevation and smoothing of plan.  
+
+# TB_INVOKE
+Node for receiving std_msgs::String msg that will be used as if in a terminal. Some commands are hard to automate through conventional API, this is a cheap workaround. 
+
+# TB_ASSEMBLY:
+Node that accumulate laser_assembler/AssembleScans2 for usage at desired rate
+
+# TB_MBCLIENT: 
+Move_base action client
+
+# TB_FSM: 
+
+
 
 
