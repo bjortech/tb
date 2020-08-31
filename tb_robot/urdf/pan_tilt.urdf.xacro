@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+  <!-- Main quadrotor link -->
+  <xacro:macro name="pan_tilt">
+		<link name="pan_tilt_base">				 	</link>
+		<link name="pan_link">	 					  </link>
+		<link name="tilt_link">	 					  </link>
+		<link name="tilt_connector_link">	  </link>
+
+		<joint name="base_to_pantilt_base" type="fixed">
+	   <origin xyz="0.0 0 0.1" rpy="0 ${-M_PI} 0" />
+	   <parent link="base_link" />
+	   <child link="pan_tilt_base"/>
+		</joint>
+
+	  <joint name="pan_joint" type="revolute">
+	    <parent link="pan_tilt_base"/>
+	    <child link="pan_link"/>
+	    <origin xyz="0 0 0.1"/>
+	    <axis xyz="0 0 1" />
+	    <limit effort="300" velocity="0.1" lower="-3.14" upper="3.14"/>
+	    <dynamics damping="50" friction="1"/>
+	  </joint>
+
+	  <joint name="tilt_joint2" type="revolute">
+	    <parent link="pan_link"/>
+	    <child link="tilt_link"/>
+	    <origin xyz="0 0 0.2"/>
+	    <axis xyz="0 1 0" />
+	    <limit effort="300" velocity="0.1" lower="-4.64" upper="-1.5"/>
+	    <dynamics damping="50" friction="1"/>
+	  </joint>
+
+   <joint name="end_joint" type="fixed">
+     <origin rpy="0 ${M_PI} 0" xyz="0 0 0"/>
+     <parent link="tilt_link"/>
+     <child link="tilt_connector_link"/>
+   </joint>
+
+  </xacro:macro>
+</robot>

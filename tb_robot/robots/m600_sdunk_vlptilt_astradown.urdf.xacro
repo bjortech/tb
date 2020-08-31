@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<robot name="m600" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="M_PI" value="3.14159"/>
+  <xacro:property name="M_SCALE" value="0.001"/>
+  <!--link name="base_link">
+  </link-->
+
+
+ <link name="mx64"> </link>
+ <link name="velodyne"></link>
+ <link name="velodyne_aligned"></link>
+  <link name="base_link">
+    <inertial>
+      <mass value="1.477" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.01152" ixy="0.0" ixz="0.0" iyy="0.01152" iyz="0.0" izz="0.0218" />
+    </inertial>
+
+  </link>
+   <link name="velodyne_link">
+      <inertial>
+        <mass value="0.1"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/>
+      </inertial>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0.03585"/>
+        <geometry>
+          <cylinder radius="0.0516" length="0.0717"/>
+        </geometry>
+      </collision>
+    </link>
+		<joint name="tilt_joint" type="revolute">
+ 			<origin xyz="0.25 0.0 -0.1" rpy="0 ${-M_PI} ${-M_PI}" />
+ 			 <parent link="base_link"/>
+ 			<child link="mx64" />
+ 			<axis xyz="0 1 0" />
+ 			<limit lower="-1.57" upper="1.57" effort="30" velocity="1.6" />
+ 	 </joint>
+ 	 <joint name="mx64_to_vlp" type="fixed">
+ 			<origin xyz="0.0 0 0.1" rpy="0 0 -0.01" />
+ 			<parent link="mx64" />
+ 			<child link="velodyne_link"/>
+ 	 </joint>
+ 	 <joint name="velodyne_joint" type="fixed" >
+ 				 <origin xyz="0 0 0.0377" rpy="0 0 0" />
+ 				 <parent link="velodyne_link" />
+ 				 <child link="velodyne"/>
+		 </joint>
+     <joint name="velodyne_joint_aligned" type="fixed" >
+           <origin xyz="0 0 0.0" rpy="0 ${-M_PI} ${-M_PI}" />
+           <parent link="velodyne_link" />
+           <child link="velodyne_aligned"/>
+     </joint>
+     <link name="cam_base">
+
+     </link>
+     <joint name="base_cam_base_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0.23 0.12 -0.10"/>
+        <parent link="base_link"/>
+        <child link="cam_base"/>
+      </joint>
+
+    <link name="cam0"></link>
+    <link name="cam1"></link>
+    <joint name="base_cam0_joint" type="fixed">
+       <origin rpy="0 0 0" xyz="0 0.1 0"/>
+       <parent link="cam_base"/>
+       <child link="cam0"/>
+     </joint>
+
+     <joint name="cam0_cam1_joint" type="fixed">
+       <origin rpy="0 0 0" xyz="0 -0.2 0"/>
+       <parent link="cam0"/>
+       <child link="cam1"/>
+     </joint>
+
+
+     <link name="cam0_optical"></link>
+     <link name="cam0_rect_optical"></link>
+     <link name="cam1_optical"></link>
+     <link name="cam1_rect_optical"></link>
+
+     <joint name="cam0_optical_joint" type="fixed">
+       <origin rpy="${-M_PI/2} 0.0 ${-M_PI/2}" xyz="0 0 0"/>
+       <parent link="cam0"/>
+       <child link="cam0_optical"/>
+     </joint>
+
+     <joint name="cam0_rect_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+       <parent link="cam0_optical"/>
+       <child link="cam0_rect_optical"/>
+     </joint>
+
+     <joint name="cam1_optical_joint" type="fixed">
+       <origin rpy="${-M_PI/2} 0.0 ${-M_PI/2}" xyz="0 0 0"/>
+       <parent link="cam1"/>
+       <child link="cam1_optical"/>
+     </joint>
+     <joint name="cam1_rect_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+       <parent link="cam1_optical"/>
+       <child link="cam1_rect_optical"/>
+     </joint>
+     <link name="velodyne_up"/>
+     <link name="velodyne_down"/>
+     <link name="camera_base_link"/>
+     <link name="camera_link"/>
+     <link name="camera_rgb_frame"/>
+     <link name="camera_depth_frame"/>
+     <link name="camera_depth_optical_frame"/>
+     <link name="camera_rgb_optical_frame"/>
+
+     <joint name="astra_joint1" type="fixed">
+       <origin rpy="0 0 0" xyz="0.2 -0.11 -0.12"/>
+       <parent link="base_link"/>
+       <child link="camera_base_link"/>
+     </joint>
+
+     <joint name="astra_joint2" type="fixed">
+       <origin rpy="0 ${M_PI/2} ${-M_PI/2} " xyz="0 0 0"/>
+       <parent link="camera_base_link"/>
+       <child link="camera_link"/>
+     </joint>
+
+     <joint name="camera_depth_joint" type="fixed">
+       <origin xyz="0.0 -0.02 0.0" rpy="0 0 0" />
+       <parent link="camera_link" />
+       <child link="camera_depth_frame"/>
+     </joint>
+
+     <joint name="camera_rgb_joint" type="fixed">
+       <origin xyz="0.0 -0.045 0.0" rpy="0 0 0" />
+       <parent link="camera_link" />
+       <child link="camera_rgb_frame"/>
+     </joint>
+
+     <joint name="camera_depth_optical_joint" type="fixed">
+       <origin xyz="0 0 0" rpy="${-M_PI/2} 0.0 ${-M_PI/2}" />
+       <parent link="camera_depth_frame" />
+       <child link="camera_depth_optical_frame"/>
+     </joint>
+
+     <joint name="camera_rgb_optical_joint" type="fixed">
+       <origin xyz="0 0 0" rpy="${-M_PI/2} 0.0 ${-M_PI/2}" />
+       <parent link="camera_rgb_frame" />
+       <child link="camera_rgb_optical_frame"/>
+     </joint>
+     <joint name="velodyne_joint_down" type="fixed" >
+           <origin xyz="0 0 3.0" rpy="0 0 0" />
+           <parent link="velodyne_aligned" />
+           <child link="velodyne_up"/>
+       </joint>
+     <joint name="velodyne_joint_up" type="fixed" >
+           <origin xyz="0 0 -3.0" rpy="0 0 0" />
+           <parent link="velodyne_aligned" />
+           <child link="velodyne_down"/>
+         </joint>
+     <link name="ll40">
+        </link>
+      <joint name="ll40_joint" type="fixed">
+        <origin rpy="0 ${M_PI/2} 0" xyz="0.05 -0.17 -0.1"/>
+        <parent link="base_link"/>
+        <child link="ll40"/>
+      </joint>
+</robot>

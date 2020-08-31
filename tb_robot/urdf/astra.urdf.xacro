@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find hector_sensors_description)/urdf/sonar_sensor.urdf.xacro" />
+  <xacro:property name="pi" value="3.1415926535897931" />
+
+  <!-- Main quadrotor link -->
+		<xacro:macro name="astra" params="parent *origin">
+
+		<link name="camera_base_link"/>
+		<link name="camera_link"/>
+		<link name="camera_rgb_frame"/>
+		<link name="camera_depth_frame"/>
+		<link name="camera_depth_optical_frame"/>
+		<link name="camera_rgb_optical_frame"/>
+
+		<joint name="astra_joint1" type="fixed">
+			<xacro:insert_block name="origin" />
+      <parent link="${parent}"/>
+			<child link="camera_base_link"/>
+		</joint>
+
+		<joint name="astra_joint2" type="fixed">
+			<origin rpy="0 ${M_PI/2} ${-M_PI/2} " xyz="0 0 0"/>
+			<parent link="camera_base_link"/>
+			<child link="camera_link"/>
+		</joint>
+
+		<joint name="camera_depth_joint" type="fixed">
+			<origin xyz="0.0 -0.02 0.0" rpy="0 0 0" />
+			<parent link="camera_link" />
+			<child link="camera_depth_frame"/>
+		</joint>
+
+		<joint name="camera_rgb_joint" type="fixed">
+			<origin xyz="0.0 -0.045 0.0" rpy="0 0 0" />
+			<parent link="camera_link" />
+			<child link="camera_rgb_frame"/>
+		</joint>
+
+		<joint name="camera_depth_optical_joint" type="fixed">
+			<origin xyz="0 0 0" rpy="${-M_PI/2} 0.0 ${-M_PI/2}" />
+			<parent link="camera_depth_frame" />
+			<child link="camera_depth_optical_frame"/>
+		</joint>
+
+		<joint name="camera_rgb_optical_joint" type="fixed">
+			<origin xyz="0 0 0" rpy="${-M_PI/2} 0.0 ${-M_PI/2}" />
+			<parent link="camera_rgb_frame" />
+			<child link="camera_rgb_optical_frame"/>
+		</joint>
+
+  </xacro:macro>
+</robot>

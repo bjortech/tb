@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<robot name="m100" xmlns:xacro="http://ros.org/wiki/xacro">
+	<xacro:property name="M_PI" value="3.14159"/>
+
+     <link name="base_link">
+       <inertial>
+         <mass value="1.477" />
+         <origin xyz="0 0 0" />
+         <inertia ixx="0.01152" ixy="0.0" ixz="0.0" iyy="0.01152" iyz="0.0" izz="0.0218" />
+       </inertial>
+     </link>
+
+	<xacro:include filename="$(find tb_robot)/urdf/pan_tilt.urdf.xacro" />
+	<xacro:pan_tilt>
+	</xacro:pan_tilt>
+
+	<xacro:include filename="$(find tb_robot)/urdf/slamdunk.urdf.xacro" />
+	<xacro:slamdunk parent="tilt_link">
+		<origin rpy="0 0 0" xyz="0.23 0.12 -0.10"/>
+	</xacro:slamdunk>
+
+	<xacro:include filename="$(find tb_robot)/urdf/astra.urdf.xacro" />
+	<xacro:astra parent="base_link">
+		<origin rpy="0 0 0" xyz="0.2 -0.11 -0.12"/>
+	</xacro:astra>
+
+	<xacro:include filename="$(find tb_robot)/urdf/velodyne.urdf.xacro" />
+	<xacro:velodyne>
+	</xacro:velodyne>
+
+	<xacro:include filename="$(find tb_robot)/urdf/lidarlite.urdf.xacro" />
+	<xacro:lidarlite>
+	</xacro:lidarlite>
+</robot>

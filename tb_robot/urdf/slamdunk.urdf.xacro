@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="pi" value="3.1415926535897931" />
+
+  <!-- Main quadrotor link -->
+		<xacro:macro name="slamdunk" params="parent *origin">
+
+		<link name="cam_base"> </link>
+	  <link name="cam0_optical"></link>
+	  <link name="cam0_rect_optical"></link>
+	  <link name="cam1_optical"></link>
+	  <link name="cam1_rect_optical"></link>
+
+	  <joint name="sdunk_connector_joint" type="fixed">
+			<xacro:insert_block name="origin" />
+			<parent link="${parent}"/>
+	 		<child link="cam_base"/>
+	 	</joint>
+
+	 <link name="cam0"></link>
+	 <link name="cam1"></link>
+	 <joint name="base_cam0_joint" type="fixed">
+	 	 <origin rpy="0 0 0" xyz="0 0.1 0"/>
+	 	 <parent link="cam_base"/>
+	 	 <child link="cam0"/>
+	  </joint>
+
+	  <joint name="cam0_cam1_joint" type="fixed">
+	 	 <origin rpy="0 0 0" xyz="0 -0.2 0"/>
+	 	 <parent link="cam0"/>
+	 	 <child link="cam1"/>
+	  </joint>
+
+	  <joint name="cam0_optical_joint" type="fixed">
+	 	 <origin rpy="${-M_PI/2} 0.0 ${-M_PI/2}" xyz="0 0 0"/>
+	 	 <parent link="cam0"/>
+	 	 <child link="cam0_optical"/>
+	  </joint>
+
+	  <joint name="cam0_rect_joint" type="fixed">
+	 	<origin rpy="0 0 0" xyz="0 0 0"/>
+	 	 <parent link="cam0_optical"/>
+	 	 <child link="cam0_rect_optical"/>
+	  </joint>
+
+	  <joint name="cam1_optical_joint" type="fixed">
+	 	 <origin rpy="${-M_PI/2} 0.0 ${-M_PI/2}" xyz="0 0 0"/>
+	 	 <parent link="cam1"/>
+	 	 <child link="cam1_optical"/>
+	  </joint>
+	  <joint name="cam1_rect_joint" type="fixed">
+	 	<origin rpy="0 0 0" xyz="0 0 0"/>
+	 	 <parent link="cam1_optical"/>
+	 	 <child link="cam1_rect_optical"/>
+	  </joint>
+
+  </xacro:macro>
+</robot>
