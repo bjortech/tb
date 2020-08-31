@@ -28,3 +28,5 @@ catkin_package(
 
 add_executable(tb_robottf_node src/tf.cpp)
 target_link_libraries(tb_robottf_node ${catkin_LIBRARIES} )
+add_executable(tb_odomglobal_node src/odomglobal.cpp)
+target_link_libraries(tb_odomglobal_node ${catkin_LIBRARIES} )
