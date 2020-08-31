@@ -2,6 +2,7 @@
 <launch>
 
 <node name="tb_robottf_node" 		 pkg="tb_robot" type="tb_robottf_node"            respawn="true"/>
+<node name="tb_odomglobal_node"  pkg="tb_robot" type="tb_odomglobal_node"            respawn="true"/>
 <rosparam file="$(find tb_robot)/param/pantilt_tilt.yaml" command="load"/>
 <include file="$(find tb_robot)/launch/include/m600_description.launch"/>
 
