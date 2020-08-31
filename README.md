@@ -7,10 +7,8 @@ GPS-denied environments. Tests have been done with multiple configurations. Whil
 In adittion to working on live hardware I have shared my supersimple simulator. This "simulator" will work without anything other than an image file displaying height. 
 An  example heightimage is included. 
 
-# GOAL-SHORTTERM: 
-The goal with this system is to enable and share a very simple way of utilizing ROS for autonomy. My hope is that we can end up creating a free, generic solution that can be used by anyone who needs to inspect or maniupalte anything, anywhere. Only building the packages tb_robot, tb_cmd and tb_sim should create a launch-and-play connection to RVIZ and move_base. 
-
-# PACKAGES: 
+# GOAL: 
+The goal with this system is to enable and share a very simple way of utilizing ROS for autonomy. My hope is that we can end up creating a free, generic solution that can be used by anyone who needs to inspect or maniupalte anything, anywhere. 
 
 # TB_ROBOT: 
 Robot description and publishing of transforms. 
@@ -21,4 +19,11 @@ Sice latest tests have been with DJI, DJI-generic topics for attitude, altitude 
 that will function as joint_state_publisher- but it will also respond to actuator commands (never figured how to do this without the GUI on JSP). 
 
 # TB_CMD: 
+This is a setpoint publisher (and actuator commands - an unfinished node). To get the setpoints I have utilized two approaches. 
+1) Simulation of cmd_vel from move_base. 
+2) Use of "make_plan"-service rather than using move_base action. The planned path needs to be elevated and interpolated. 
+
+# TB_PATHMAKE: 
+Nodes for interpolation, elevation and smoothing of paths created by move_base. 
+
 
