@@ -19,14 +19,17 @@ Sice latest tests have been with DJI, DJI-generic topics for attitude, altitude 
 that will function as joint_state_publisher- but it will also respond to actuator commands (never figured how to do this without the GUI on JSP). 
 
 # TB_CMD: 
-This is a setpoint publisher. To get the setpoints I have utilized two approaches. 
-1) Simulation of cmd_vel from move_base. 
-2) Use of "make_plan"-service rather than using move_base action. The planned path needs to be elevated and interpolated. 
+This has been redone without the path-using option. I only include one way of cmd in initial pkg. 
+#This is a setpoint publisher. To get the setpoints I have utilized two approaches. 
+#1) Simulation of cmd_vel from move_base. 
+#2) Use of "make_plan"-service rather than using move_base action. The planned path needs to be elevated and interpolated. 
 
 # TB_PATHMAKER: 
-Nodes for creation of 2d plan by move_base. Nodes for interpolation,elevation and smoothing of plan.  
+This has been removed. This version only follows cmd_vel from move_base and elevation from tb_abmap. 
+#Nodes for creation of 2d plan by move_base. Nodes for interpolation,elevation and smoothing of plan.  
 
 # TB_INVOKE
+-Not neccessary! Don't know how to delete
 Node for receiving std_msgs::String msg that will be used as if in a terminal. Some commands are hard to automate through conventional API, this is a cheap workaround. 
 
 # TB_ASSEMBLY:
@@ -36,6 +39,28 @@ Node that accumulate laser_assembler/AssembleScans2 for usage at desired rate. I
 Move_base action client
 
 # TB_FSM: 
+Very basic state machine 
+state==0: on ground 
+state==1: in air, 
+state==2 going home 
+state==3 at takeoff xy coordinates
+
+# TB_EDTOAUTO
+This is the main source of input. Visualize with rviz (in tb_bringup) to see how it works. 
+It consists of three nodes: 
+# tb_edto_poly_node: 
+Raycasts in a horisontal circle to find objects within proximity of setpoint
+# TB_edto_down_node: 
+Collects downwards points for clustering/segmentation. Finding roads or roofs. Packages working with this is not included atm. Targeter uses a simpified example function. 
+# TB_edto_side_node: 
+Collects points in plane within target distance of closest object (as given by EDTOoctomap.) This is to be able to trace the extents of the object in question, a basic inspection functionality. 
+
+# TB_ABMAP
+Frontier and elevator. Uses incoming assembly cloud to evaluate frontier and elevation
+
+# TB_TARGETER
+Simple targeter that tries to use identified vertical walls for local position reference, in abscence it uses nearest unknown position. All targets removed if close to any visited position. 
+
 
 
 
