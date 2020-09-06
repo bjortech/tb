@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<launch>
-	<arg name="image_path" default="/home/nuc/mapimages/grey.png"/>
+
+	<arg name="image_path" default="$(find tb_simulate)/maps/map_height.png"/>
 	<arg name="radius_surroundcloud" default="25.0"/>
-	<arg name="image_elevation_max"  default="100.0"/>
+	<arg name="image_elevation_max"  default="25.0"/>
 	<arg name="limit_dhdng" default="1.5"/>
 	<arg name="limit_dincl"  default="1.0"/>
 
@@ -22,4 +22,6 @@
 		<param name="limit_dhdng" type="double" value="$(arg limit_dhdng)" />
 		<param name="limit_dincl" type="double" value="$(arg limit_dincl)" />
 	</node>
+	<node type="tb_simulate_octrepub_node" pkg="tb_simulate" name="tb_simulate_octrepub_node"/>
+
 </launch>

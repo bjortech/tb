@@ -1,0 +1,10 @@
+image: map.pgm #kar11.pgm
+resolution: 1.0
+#origin: [-132.5,-210.5,0.000000]
+#origin: [-203,-153.5,0.000000]
+#origin: [-136,-193,0.000000]
+origin: [-500,-500,0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+

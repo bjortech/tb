@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node name="tb_edto_poly_auto_node"  pkg="tb_edtoauto" type="tb_edto_poly_auto_node"    respawn="true" output="screen">
+		<param name="only_track_last_obstacle" type="bool" value="false" />
+		<param name="update_area_sidelength"	  type="double" value="30.0"/>
+		<param name="update_area_z_radius" 		 	 type="double" value="1.5" />
+		<param name="obstacle_distance_cutoff"  type="double" value="3.0" />
+
+	</node>
+	<node name="tb_edto_side_auto_node"  pkg="tb_edtoauto" type="tb_edto_side_auto_node"    respawn="true" output="screen">
+		<param name="update_area_z_radius" type="double" value="1.5" />
+		<param name="cluster_spacing" type="double" value="5.0" />
+		<param name="dst_target" type="double" value="6.0" />
+		<param name="dst_margin" type="double" value="1.5" />
+	</node>
+
+	<node name="tb_edto_down_auto_node"  pkg="tb_edtoauto" type="tb_edto_down_auto_node"    respawn="true" output="screen">
+		<param name="prescreen_area_sidelength" type="double" value="7.0" />
+		<param name="update_area_sidelength"	  type="double" value="30.0"/>
+		<param name="update_area_z_radius"  	  type="double" value="5.0" />
+	</node>
+</launch>

@@ -104,7 +104,7 @@ int main(int argc, char **argv){
 	                             ros::Time(0));
 	  }
 	  catch (tf2::TransformException &ex) {
-	    ROS_WARN("%s",ex.what());
+	   // ROS_WARN("%s",ex.what());
 	    ros::Duration(1.0).sleep();
 			continue;
 	  }

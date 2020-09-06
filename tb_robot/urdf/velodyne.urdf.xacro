@@ -6,8 +6,6 @@
 		<link name="mx64"> </link>
 	  <link name="velodyne"></link>
 	  <link name="velodyne_aligned"></link>
-		<link name="velodyne_up"/>
-		<link name="velodyne_down"/>
 	   <link name="velodyne_link">
 	      <inertial>
 	        <mass value="0.1"/>
@@ -43,15 +41,5 @@
 	           <parent link="velodyne_link" />
 	           <child link="velodyne_aligned"/>
 	     </joint>
-			 <joint name="velodyne_joint_down" type="fixed" >
-	 					<origin xyz="0 0 3.0" rpy="0 0 0" />
-	 					<parent link="velodyne_aligned" />
-	 					<child link="velodyne_up"/>
-	 			</joint>
-	 		<joint name="velodyne_joint_up" type="fixed" >
-	 					<origin xyz="0 0 -3.0" rpy="0 0 0" />
-	 					<parent link="velodyne_aligned" />
-	 					<child link="velodyne_down"/>
-	 				</joint>
   </xacro:macro>
 </robot>

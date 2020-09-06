@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node type="tb_mbclient_node" pkg="tb_mbclient" name="tb_mbclient_node"/>
+</launch>

@@ -26,8 +26,13 @@
 tf2_ros::Buffer tfBuffer;
 std_msgs::Float64 arm_cmd1,arm2_cmd_pan,arm2_cmd_tilt;
 float cmd_tilt,cmd_arm2tilt,cmd_arm2pan;
+float setp_tilt = -M_PI/14;
+float setp_arm2tilt = -M_PI/4;
+float setp_arm2pan  = 0.0;
 ros::Publisher pub_arm_cmd1,pub_arm_cmd2_pan,pub_arm_cmd2_tilt;
 geometry_msgs::Vector3 rpy;
+geometry_msgs::Point pos;
+geometry_msgs::PointStamped arm1_vp,arm2_vp;
 float saturate(float val, float max){
   if((std::isnan(val)) || (std::isinf(val)))
     return 0;
@@ -47,7 +52,21 @@ float get_arm2tilt_setpoint(){
 float get_arm2pan_setpoint(){
   return cmd_arm2pan - rpy.z;
 }
+float get_dst2d(geometry_msgs::Point p1, geometry_msgs::Point p2){
+  return(sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)));
+}
 
+float get_dst3d(geometry_msgs::Point p1, geometry_msgs::Point p2){
+  return(sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)+pow(p1.z-p2.z,2)));
+}
+float get_hdng(geometry_msgs::Point p1,geometry_msgs::Point p0){
+  float dx = p1.x - p0.x;
+  float dy = p1.y - p0.y;
+  return atan2(dy,dx);
+}
+float get_inclination(geometry_msgs::Point p2, geometry_msgs::Point p1){
+  return atan2(p2.z - p1.z,get_dst2d(p1,p2));
+}
 void update_pos(){
   geometry_msgs::TransformStamped transformStamped;
   try{
@@ -60,6 +79,26 @@ void update_pos(){
   }
 	tf2::Matrix3x3 q(tf2::Quaternion(transformStamped.transform.rotation.x, transformStamped.transform.rotation.y, transformStamped.transform.rotation.z, transformStamped.transform.rotation.w));
 	q.getRPY(rpy.x,rpy.y,rpy.z);
+	rpy.y *= -1;
+	pos.x = transformStamped.transform.translation.x;
+  pos.y = transformStamped.transform.translation.y;
+  pos.z = transformStamped.transform.translation.z;
+}
+void update_targets(){
+	if((ros::Time::now()-arm1_vp.header.stamp).toSec() < 1.0){
+		cmd_tilt = get_inclination(arm1_vp.point,pos);
+	}
+	else{
+		cmd_tilt = setp_tilt;
+	}
+	if((ros::Time::now()-arm2_vp.header.stamp).toSec() < 1.0){
+		cmd_arm2tilt = get_inclination(arm2_vp.point,pos);
+		cmd_arm2pan  = get_hdng(arm2_vp.point,pos);
+	}
+	else{
+		cmd_arm2tilt 	= setp_arm2tilt;
+		cmd_arm2pan 	= setp_arm2pan;
+	}
 }
 void send_tilt(float armcmd){
   arm2_cmd_tilt.data = armcmd;
@@ -86,13 +125,19 @@ void send_pan(float armcmd){
   pub_arm_cmd2_pan.publish(arm2_cmd_pan);
 }
 void tilt_cb(const std_msgs::Float64::ConstPtr& msg){
-  cmd_tilt = msg->data;
+  setp_tilt = msg->data;
 }
 void arm2tilt_cb(const std_msgs::Float64::ConstPtr& msg){
-  cmd_arm2tilt = msg->data;
+  setp_arm2tilt = msg->data;
 }
 void arm2pan_cb(const std_msgs::Float64::ConstPtr& msg){
-  cmd_arm2pan = msg->data;
+  setp_arm2pan = msg->data;
+}
+void target_viewpoint_arm1_cb(const geometry_msgs::PointStamped::ConstPtr& msg){
+	arm1_vp = *msg;
+}
+void target_viewpoint_arm2_cb(const geometry_msgs::PointStamped::ConstPtr& msg){
+	arm2_vp = *msg;
 }
 int main(int argc, char **argv){
     ros::init(argc, argv, "tb_cmd_actuation_node");
@@ -106,10 +151,13 @@ int main(int argc, char **argv){
 		ros::Subscriber s1  = nh.subscribe("/tb_cmd/tilt",1,tilt_cb);
 		ros::Subscriber s2  = nh.subscribe("/tb_cmd/arm2_tilt",1,arm2tilt_cb);
 		ros::Subscriber s3  = nh.subscribe("/tb_cmd/arm2_pan",1,arm2pan_cb);
+		ros::Subscriber s4  = nh.subscribe("/tb_cmd/arm1_viewpoint",1,target_viewpoint_arm1_cb);
+		ros::Subscriber s5  = nh.subscribe("/tb_cmd/arm2_viewpoint",1,target_viewpoint_arm2_cb);
 		ros::Rate rate(50);
 
 	while(ros::ok()){
 		update_pos();
+		update_targets();
 		send_tilt(get_tilt_setpoint());
 		send_tilt2(get_arm2tilt_setpoint());
 		send_pan(get_arm2pan_setpoint());

@@ -28,7 +28,9 @@
 	<xacro:include filename="$(find tb_robot)/urdf/velodyne.urdf.xacro" />
 	<xacro:velodyne>
 	</xacro:velodyne>
-
+	<xacro:include filename="$(find tb_robot)/urdf/velodyne_virtuals.urdf.xacro" />
+	<xacro:velodyne_virtuals>
+	</xacro:velodyne_virtuals>
 	<xacro:include filename="$(find tb_robot)/urdf/lidarlite.urdf.xacro" />
 	<xacro:lidarlite>
 	</xacro:lidarlite>

@@ -15,5 +15,6 @@
 	  <param name="reference_longitude" value="$(arg longitude)"/>
 	  <param name="reference_altitude" value="0"/>
 	</node>
+	<node type="tb_simulate_octrepub_node" pkg="tb_simulate" name="tb_simulate_octrepub_node"/>
 
 </launch>

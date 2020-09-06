@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Main quadrotor link -->
+  <xacro:macro name="velodyne_virtuals">
+		<link name="velodyne_up"/>
+ 	 <link name="velodyne_down"/>
+ 	 <link name="velodyne_tilt_down"></link>
+ 	 <link name="velodyne_tilt_up"></link>
+
+ 	 <joint name="velodyne_joint_down" type="fixed" >
+ 				<origin xyz="0 0 3.0" rpy="0 0 0" />
+ 				<parent link="velodyne_aligned" />
+ 				<child link="velodyne_up"/>
+ 		</joint>
+ 	<joint name="velodyne_joint_up" type="fixed" >
+		<origin xyz="0 0 -3.0" rpy="0 0 0" />
+		<parent link="velodyne_aligned" />
+		<child link="velodyne_down"/>
+	</joint>
+
+<joint name="velodyne_tiltjoint_down" type="fixed" >
+		<origin xyz="0 0 0" rpy="0 ${M_PI/16} 0" />
+		<parent link="velodyne_aligned" />
+		<child link="velodyne_tilt_down"/>
+		</joint>
+	<joint name="velodyne_tiltjoint_up" type="fixed" >
+		<origin xyz="0 0 0" rpy="0 ${-M_PI/16} 0" />
+		<parent link="velodyne_aligned" />
+		<child link="velodyne_tilt_up"/>
+	</joint>
+  </xacro:macro>
+</robot>
