@@ -2,13 +2,13 @@
 Generic Highlevel Autonomy Framework 
 
 This is an attempt to share my work over the last years. The goal is to create a framework for totally isolated operation in threedimensional, uknown, dynamic and 
-GPS-denied environments. Tests have been done with multiple configurations. While it may look very crude, this setup actually works. 
+GPS-denied environments. Tests have been done with multiple configurations.
 
 In adittion to working on live hardware I have shared my supersimple simulator. This "simulator" will work without anything other than an image file displaying height. 
-An  example heightimage is included. 
 
-# GOAL: 
-The goal with this system is to enable and share a very simple way of utilizing ROS for autonomy. My hope is that we can end up creating a free, generic solution that can be used by anyone who needs to inspect or maniupalte anything, anywhere. 
+An  example heightimage is included. 
+# TB_BRINGUP:
+After installing octomap, ros-packages, edto etc and building these packages, roslaunch tb_bringup tb2.launch should work. It probably doesn't, but I'll fix it. 
 
 # TB_ROBOT: 
 Robot description and publishing of transforms. 
