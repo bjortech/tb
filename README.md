@@ -6,7 +6,6 @@ GPS-denied environments. Tests have been done with multiple configurations.
 
 In adittion to working on live hardware I have shared my supersimple simulator. This "simulator" will work without anything other than an image file displaying height. 
 
-An  example heightimage is included. 
 # TB_BRINGUP:
 After installing octomap, ros-packages, edto etc and building these packages, roslaunch tb_bringup tb2.launch should work. It probably doesn't, but I'll fix it. 
 
