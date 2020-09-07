@@ -1,0 +1,5 @@
+float collision_radius
+float maprad
+geometry_msgs/Point p
+---
+sensor_msgs/Image mapimg

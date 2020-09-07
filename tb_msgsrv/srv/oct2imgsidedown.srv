@@ -1,0 +1,5 @@
+octomap_msgs/Octomap octomap
+std_msgs/Float64 z
+std_msgs/Float64 collision_radius
+---
+sensor_msgs/Image mapimg
