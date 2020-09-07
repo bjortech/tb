@@ -11,7 +11,7 @@
 	<include file="$(find tb_bringup)/launch/include/filters.launch.xml"/>
 	<include file="$(find tb_bringup)/launch/include/mb.launch.xml"/>
 	<include file="$(find tb_targeter)/launch/targeter.launch"/>
-	<include file="$(find tb_bringup)/launch/include/octomap.launch"/>
+	<include file="$(find tb_bringup)/launch/include/octomap.launch.xml"/>
 	<include file="$(find tb_simulate)/launch/simulate.launch"/>
 
 	<node name="tb_rmbrain" pkg="tb_bringup" type="tb_rmbrain.sh" />
