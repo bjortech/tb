@@ -1,5 +1,6 @@
 # QUICKLAUNCH
-(Only tested once. If the process stops, find the line where it failed and copy paste one by one. 
+(Only tested once. If the process stops, find the line where it failed and copy paste one by one.)
+ 
 Case A) Fresh install Ubuntu 18.04 (must be this version!).
   - Download the file "install_ros.sh"
   - open a terminal -> got to the folder where the file is -> terminal$:   chmod +x install_ros.sh 
