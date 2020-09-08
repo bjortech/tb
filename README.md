@@ -1,8 +1,8 @@
 # QUICKLAUNCH
 Case A) Fresh install Ubuntu 18.04 (must be this version!).
   - Download the file "install_ros.sh"
-  - open a terminal -> got to the folder where the file is -> write$:   chmod +x install_ros.sh 
-  - write$: ./install.sh
+  - open a terminal -> got to the folder where the file is -> terminal$:   chmod +x install_ros.sh 
+  - terminal$: ./install_ros.sh
   Continue to Case B) 
   
 Case B) Robot Operating System (Melodic) is installed.
