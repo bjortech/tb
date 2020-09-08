@@ -1,3 +1,16 @@
+# QUICKLAUNCH
+Case A) Fresh install Ubuntu 18.04 (must be this version!).
+  - Download the file "install_ros.sh"
+  - open a terminal -> got to the folder where the file is -> write$:   chmod +x install_ros.sh 
+  - write$: ./install.sh
+  Continue to Case B) 
+  
+Case B) Robot Operating System (Melodic) is installed.
+  - Download the file "build_and_launch.sh"
+  - open a terminal -> got to the folder where the file is -> terminal$:   chmod +x build_and_launch.sh 
+  - terminal$: ./build_and_launch.sh
+ 
+
 # tb
 Generic Highlevel Autonomy Framework 
 
