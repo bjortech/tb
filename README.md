@@ -27,6 +27,9 @@ Robot has two sensors connected on their respective servo(s). One tilt-joint con
 Sice latest tests have been with DJI, DJI-generic topics for attitude, altitude and position are used in the simulator. I have also created a joint_states publisher 
 that will function as joint_state_publisher- but it will also respond to actuator commands (never figured how to do this without the GUI on JSP). 
 
+# TB_COSTMAP:
+Uses Ecludian Distance Transform on octomap in desired ROI to create a costmap that move_base can use to navigate in 2D at any plane along the z-axis. This can also be tilted to create plans with constant inclination. 
+
 # TB_CMD: 
 This has been redone without the path-using option. I only include one way of cmd in initial pkg. 
 #This is a setpoint publisher. To get the setpoints I have utilized two approaches. 
