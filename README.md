@@ -1,7 +1,7 @@
 # QUICKLAUNCH
 tb_installscripts contains scripts for installation of ros and for building all packages in a new workspace. Details in README at tb_installscripts. 
  
-# tb
+# ABOUT
 Generic Highlevel Autonomy Framework 
 
 This is an attempt to share my work over the last years. The goal is to create a framework for totally isolated operation in threedimensional, uknown, dynamic and 
