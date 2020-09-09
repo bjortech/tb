@@ -13,4 +13,4 @@ chmod +x scripts/tb_simulate_surroundcloud_node.py
 roscd tb_invoke
 chmod +x tb_invoke_node.py
 source ~/.bashrc
-roslaunch tb_bringup tb_without_premade_octomap.launch
+roslaunch tb_bringup tb_premade_octomap.launch
