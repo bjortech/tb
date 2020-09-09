@@ -9,9 +9,9 @@ GPS-denied environments. Tests have been done with multiple configurations.
 
 In adittion to working on live hardware I have shared my supersimple simulator. This "simulator" will work without anything other than an image file displaying height. 
 
-NB: Please understand that this is very basic and that there are a lot of bugs and errors. I never intended to do this by myself, I had never written C++ a few years ago. My hope is that someone would like to join me in replacing the different parts of the system with best-practice implementation, as well as defining and completing the missing components. 
+NB: Please understand that this is very basic and that there are a lot of bugs and errors.My hope is that someone would like to join me in replacing the different parts of the system with best-practice implementation, as well as defining and completing the missing components. 
 
-NB2: As this is self-learned along the way, coding style is probably confusing to experienced coders. Feel free to help me convert to correct format. My nodes are all built by same script and dependencies, naturally a lot of redundant ones. All nodes are written in the same document, not using any includes or classes. 
+NB2: As this is self-learned along the way, coding style is probably confusing to experienced coders. Feel free to help me convert to correct format. My nodes are all built by same source and with all dependencies, naturally a lot of redundant ones. All nodes are written in the same document, not using any includes or classes. 
 
 Video of tests (look below the actual location, I have ran this package at a lower altitude (the test failed and it flew far too high):
 https://www.youtube.com/watch?v=EKpb4s75W5g
