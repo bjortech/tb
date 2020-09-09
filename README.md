@@ -13,6 +13,9 @@ NB: Please understand that this is very basic and that there are a lot of bugs a
 
 NB2: As this is self-learned along the way, coding style is probably confusing to experienced coders. Feel free to help me convert to correct format. My nodes are all built by same script and dependencies, naturally a lot of redundant ones. All nodes are written in the same document, not using any includes or classes. 
 
+Video of tests (look below the actual location, I have ran this package at a lower altitude (the test failed and it flew far too high):
+https://www.youtube.com/watch?v=EKpb4s75W5g
+
 # TB_BRINGUP:
 Launch files and configurations for octomap,filters,move_base,map_server etc. 
 
