@@ -7,7 +7,7 @@ Generic Highlevel Autonomy Framework
 This is an attempt to share my work over the last years. The goal is to create a framework for totally isolated operation in threedimensional, uknown, dynamic and 
 GPS-denied environments. Tests have been done with multiple configurations.
 
-In adittion to working on live hardware I have shared my supersimple simulator. This "simulator" will work without anything other than an image file displaying height. 
+In adittion to working on live hardware I have shared my supersimple simulator. This "simulator" will work without anything other than an image file displaying height. (I messed up the build without premade octomap, will fix it soon)
 
 NB: Please understand that this is very basic and that there are a lot of bugs and errors.My hope is that someone would like to join me in replacing the different parts of the system with best-practice implementation, as well as defining and completing the missing components. 
 
