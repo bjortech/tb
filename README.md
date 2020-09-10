@@ -1,3 +1,5 @@
+# I am looking for feedback as to what I would need to change to make this an interesting project to work on. Do not hesitate to comment and please be brutally honest. 
+
 # QUICKLAUNCH
 tb_installscripts contains scripts for installation of ros and for building all packages in a new workspace. Details in README at tb_installscripts. 
  
@@ -7,11 +9,7 @@ Generic Highlevel Autonomy Framework
 This is an attempt to share my work over the last years. The goal is to create a framework for totally isolated operation in threedimensional, uknown, dynamic and 
 GPS-denied environments. Tests have been done with multiple configurations.
 
-In adittion to working on live hardware I have shared my supersimple simulator. This "simulator" will work without anything other than an image file displaying height. (I messed up the build without premade octomap, will fix it soon)
-
-NB: Please understand that this is very basic and that there are a lot of bugs and errors.My hope is that someone would like to join me in replacing the different parts of the system with best-practice implementation, as well as defining and completing the missing components. 
-
-NB2: As this is self-learned along the way, coding style is probably confusing to experienced coders. Feel free to help me convert to correct format. My nodes are all built by same source and with all dependencies, naturally a lot of redundant ones. All nodes are written in the same document, not using any includes or classes. 
+In adittion to working on live hardware I have shared my supersimple simulator. This "simulator" will work without anything other than an image file displaying height. 
 
 Video of tests (look below the actual location, I have ran this package at a lower altitude (the test failed and it flew far too high):
 https://www.youtube.com/watch?v=EKpb4s75W5g
