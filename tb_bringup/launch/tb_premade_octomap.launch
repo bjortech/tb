@@ -12,8 +12,8 @@
 	<include file="$(find tb_bringup)/launch/include/mb.launch.xml"/>
 	<include file="$(find tb_targeter)/launch/targeter.launch"/>
 
-	<include file="$(find tb_bringup)/launch/include/octomap_premade.launch"/>
-	<include file="$(find tb_simulate)/launch/simulate_nocloud.launch"/>
+	<include file="$(find tb_bringup)/launch/include/octomap_premade.launch.xml"/>
+	<include file="$(find tb_simulate)/launch/simulate_premade_octomap.launch"/>
 
 	<node name="tb_rmbrain" pkg="tb_bringup" type="tb_rmbrain.sh" />
 
