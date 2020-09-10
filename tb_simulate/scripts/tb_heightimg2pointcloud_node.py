@@ -18,16 +18,21 @@ def callback(msg):
 def main_program():
 	global scaled_polygon_pcl,pub
 	rospy.init_node('tb_heightimg2pointcloud_node')
+	par_pathstring = rospy.get_param('~image_path', '/home/nuc/mapimages/d2.png')
 	pub = rospy.Publisher('/tb_pc2_full', PointCloud2, queue_size=1)
-	image = cv2.imread(rospy.get_param('~image_path', '/home/nuc/mapimages/map_to_publish2.png'))
+	par_zmax = rospy.get_param('~image_elevationmax',50.0)
+	par_zres = rospy.get_param('~pointcloud_zresolution',3.0)
+	image = cv2.imread(par_pathstring)
 	pointlist = []
 	for c in range((len(image[0])-1)):
 		for r in range((len(image))):
 			x = (c - len(image[0])/2)
 			y = (len(image)/2 - r)
-			z = int(round((float(image[r][c][0]) / 255.0)*25.0))
-			#for z in range(image[r][c][0]/5):
-			pointlist.append([x,y,z])
+			z = (image[r][c][0])
+			z = int(round((float(image[r][c][0]) / 255.0)*par_zmax))
+			altatpnt = int(round((float(image[r][c][0]) / 255.0)*par_zmax))
+			for z in range(altatpnt/int(round(par_zres))):
+				pointlist.append([x,y,z])
 	header = Header()
 	header.frame_id = 'map'
 	scaled_polygon_pcl = pcl2.create_cloud_xyz32(header, pointlist)

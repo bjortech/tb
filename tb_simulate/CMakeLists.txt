@@ -10,6 +10,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   tf2_ros
+	sensor_msgs
+	pcl_conversions
+	pcl_ros
 )
 
 catkin_package(
@@ -17,6 +20,14 @@ catkin_package(
 include_directories(
     ${catkin_INCLUDE_DIRS})
 
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+add_executable(tb_sim_heightimg_to_sensor_pointcloud_node src/heightimg_to_sensor_pointcloud.cpp)
+target_link_libraries(tb_sim_heightimg_to_sensor_pointcloud_node
+    ${PCL_LIBRARIES}
+		${catkin_LIBRARIES}
+    ${OpenCV_LIBRARIES})
 
 add_executable(tb_simulate_actuatorresponse_node src/actuatorsresponse.cpp)
 target_link_libraries(tb_simulate_actuatorresponse_node ${catkin_LIBRARIES})
