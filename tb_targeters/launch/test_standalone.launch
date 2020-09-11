@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node name="tb_targeters_side2d_node"  pkg="tb_targeters" type="tb_targeters_side2d_node"    respawn="true" output="screen">
+		<param name="update_area_sidelength" type="double" value="30.0" />
+		<param name="update_area_z_radius" type="double" value="1.5" />
+		<param name="dst_target" type="double" value="3.0" />
+		<param name="dst_margin" type="double" value="1.0" />
+</node>
+	<node name="tb_targeters_node"  pkg="tb_targeters" type="tb_targeters_node"    respawn="true" output="screen">
+		<param name="update_area_sidelength" type="double" value="30.0" />
+		<param name="update_area_z_radius" type="double" value="1.5" />
+		<param name="dst_target" type="double" value="3.0" />
+		<param name="dst_margin" type="double" value="1.5" />
+</node>
+	<node pkg="tb_targeters" type="tb_targeter_node" name="tb_targeter_node" output="screen">
+		<param name="par_maxrad_pathcen" type="double" value="40.0" />
+		<param name="par_visited_cutoff" type="double" value="8.0" />
+	</node>
+
+</launch>
