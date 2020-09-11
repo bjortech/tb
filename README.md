@@ -1,4 +1,4 @@
-# I am looking for feedback as to what I would need to change to make this an interesting project to work on. Do not hesitate to comment, and please, be brutally honest. 
+
 
 # QUICKLAUNCH
 tb_installscripts contains scripts for installation of ros and for building all packages in a new workspace. Details in README at tb_installscripts. 
