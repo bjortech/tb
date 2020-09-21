@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<launch>
-	<node pkg="tb_targeter" type="tb_targeter_node" name="tb_targeter_node" output="screen">
-		<param name="par_maxrad_pathcen" type="double" value="40.0" />
-		<param name="par_visited_cutoff" type="double" value="8.0" />
-	</node>
-
-</launch>

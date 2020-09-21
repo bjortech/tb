@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="scancloud_to_laserscan2">
+        <remap from="cloud_in" to="/velodyne_points" />
+        <remap from="scan" to="/scan_perfect_alt"/>
+        <rosparam>
+            target_frame: base_perfect_alt
+            transform_tolerance: 1.35
+            min_height: -1.0
+            max_height: 1.0
+
+            angle_min: -1.57079
+            angle_max: 1.57079
+            angle_increment: 0.006168878806972223
+            scan_time: 0.01250000292204
+            range_min: 3.0
+            range_max: 50.0
+            use_inf: true
+            inf_epsilon: 1.0
+            concurrency_level: 1
+        </rosparam>
+      </node>
+			<node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="scancloud_to_laserscan">
+        <remap from="cloud_in" to="/velodyne_points" />
+        <remap from="scan" to="/scan_stabilized"/>
+        <rosparam>
+            target_frame: base_stabilized
+            transform_tolerance: 1.35
+            min_height: -1.0
+            max_height: 1.0
+
+            angle_min: -1.57079
+            angle_max: 1.57079
+            angle_increment: 0.006168878806972223
+            scan_time: 0.01250000292204
+            range_min: 3.0
+            range_max: 50.0
+            use_inf: true
+            inf_epsilon: 1.0
+            concurrency_level: 1
+        </rosparam>
+      </node>
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pclcloud_to_laserscan2">
+      <remap from="cloud_in" to="/velodyne_points" />
+      <remap from="scan" to="/velodyne_scan"/>
+      <rosparam>
+          target_frame: velodyne
+          transform_tolerance: 0.35
+          min_height: -1.0
+          max_height: 1.0
+
+          angle_min: -1.57079
+          angle_max: 1.57079
+          angle_increment: 0.006168878806972223
+          scan_time: 0.01250000292204
+          range_min: 3.0
+          range_max: 50.0
+          use_inf: true
+          inf_epsilon: 1.0
+          concurrency_level: 0
+      </rosparam>
+    </node>
+</launch>

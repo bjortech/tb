@@ -62,9 +62,22 @@ int oct_xmin,oct_ymin,oct_zmin,oct_xmax,oct_ymax,oct_zmax,oct_range_x,oct_range_
 float last_yaw = 0.0;
 ros::Time last_sec;
 double par_min_distance,par_maprad,par_dz,par_maprad0;
+geometry_msgs::PolygonStamped poly_obs,poly_cleared,poly_obstacles;
 
 nav_msgs::Path path_down;
-
+float get_dst2d32(geometry_msgs::Point32 p2, geometry_msgs::Point32 p1){
+  return(sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)));
+}
+bool is_point32_in_poly(geometry_msgs::PolygonStamped poly_to_check,geometry_msgs::Point32 pin,float lim){
+  float res,dst;
+  if(poly_to_check.polygon.points.size() == 0)
+    return false;
+  for(int i = 0; i < poly_to_check.polygon.points.size(); i++){
+     if(get_dst2d32(poly_to_check.polygon.points[i],pin) < lim)
+        return false;
+  }
+  return true;
+}
 std_msgs::Header hdr(){
   std_msgs::Header header;
   header.frame_id = "map";
@@ -141,8 +154,9 @@ geometry_msgs::Quaternion get_quat(geometry_msgs::Point to, geometry_msgs::Point
 nav_msgs::Path get_down(float collision_radius){
 	nav_msgs::Path pathout;
 	geometry_msgs::PoseStamped ps;
-	pathout.header.frame_id = ps.header.frame_id = "map";
-	pathout.header.stamp = ps.header.stamp = ros::Time::now();
+
+	poly_obs.header.frame_id = pathout.header.frame_id = ps.header.frame_id = "map";
+	poly_obs.header.stamp = pathout.header.stamp = ps.header.stamp = ros::Time::now();
 	ps.pose.orientation.x = ps.pose.orientation.z = 0.0;
 	ps.pose.orientation.y = ps.pose.orientation.w = 0.7071;
   for(int y = oct_ymin; y < oct_ymax; y++){
@@ -155,6 +169,12 @@ nav_msgs::Path get_down(float collision_radius){
 				octomap::point3d closestObst;
 				edf_ptr.get()->getDistanceAndClosestObstacle(p,dst,closestObst);
 				if(round(dst) == 1 && dst < collision_radius && closestObst.z() < z){
+					geometry_msgs::Point32 pobs;
+					pobs.x = closestObst.x();
+					pobs.y = closestObst.y();
+					pobs.z = closestObst.z();
+					//if(!is_point32_in_poly(poly_obs,pobs,1.0))
+					poly_obs.polygon.points.push_back(pobs);
 			//	if(d < collision_radius && d >= 0){
 					ps.pose.position.x = x;					ps.pose.position.y = y;					ps.pose.position.z = z;
 					pathout.poses.push_back(ps);
@@ -199,9 +219,12 @@ void update_pos(){
 		if((get_dst3d(pos,last_pos) > 5.0) || (abs(get_shortest(yaw,last_yaw)) > 1.0) || ((ros::Time::now()-last_sec).toSec() > 5.0)){
 			std::vector<float> bbvec;
 			bbvec.resize(6);
+			geometry_msgs::Point bbmin_octree,bbmax_octree;
+			octree.get()->getMetricMin(bbmin_octree.x,bbmin_octree.y,bbmin_octree.z);
+			octree.get()->getMetricMax(bbmax_octree.x,bbmax_octree.y,bbmax_octree.z);
 			bbvec[0] = pos.x - par_maprad0;
 			bbvec[1] = pos.y - par_maprad0;
-			bbvec[2] = 0;
+			bbvec[2] = bbmin_octree.z;
 			bbvec[3] = pos.x + par_maprad0;
 			bbvec[4] = pos.y + par_maprad0;
 			bbvec[5] = pos.z + par_dz;
@@ -231,6 +254,7 @@ void update_pos(){
 		}
 	}
 }
+
 void octomap_callback(const octomap_msgs::Octomap& msg){
   abs_octree=octomap_msgs::fullMsgToMap(msg);
   octree.reset(dynamic_cast<octomap::OcTree*>(abs_octree));
@@ -247,13 +271,16 @@ int main(int argc, char** argv)
 	tf2_ros::TransformListener tf2_listener(tfBuffer);
 	ros::Subscriber s1  = nh.subscribe("/octomap_full",1,&octomap_callback);
 	ros::Publisher pub_point 	= nh.advertise<geometry_msgs::PointStamped>("/tb_edto/down_auto_point",100);
-
-	ros::Publisher pub_path 	= nh.advertise<nav_msgs::Path>("/tb_edto/down_auto",100);
+	ros::Publisher pub_poly = nh.advertise<geometry_msgs::PolygonStamped>("/tb_edto/downauto_obstacles",100);
+	ros::Publisher pub_path 	= nh.advertise<nav_msgs::Path>("/tb_edto/downauto_path",100);
 	ros::Rate rate(6.0);
 	while(ros::ok()){
-		pub_path.publish(path_down);
-		pub_point.publish(pnt_down);
-
+		if(poly_obs.polygon.points.size() > 0){
+			pub_poly.publish(poly_obs);
+			pub_path.publish(path_down);
+			pub_point.publish(pnt_down);
+			poly_obs.polygon.points.resize(0);
+		}
 		update_pos();
 		rate.sleep();
 		ros::spinOnce();

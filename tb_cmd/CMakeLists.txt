@@ -36,3 +36,6 @@ target_link_libraries(tb_cmd_exequte_pid_node ${catkin_LIBRARIES} )
 
 add_executable(tb_cmd_setpoint_minimal_node src/cmd_minimal.cpp)
 target_link_libraries(tb_cmd_setpoint_minimal_node ${catkin_LIBRARIES} )
+
+add_executable(tb_cmd_setpoint_path_node src/cmd_setpoint_path.cpp)
+target_link_libraries(tb_cmd_setpoint_path_node ${catkin_LIBRARIES} )

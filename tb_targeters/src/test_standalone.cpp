@@ -323,7 +323,7 @@ void colorize_zlvlimg(nav_msgs::Path pathin){
 		int r = y2r(pathin.poses[i].pose.position.y);
 		int c = x2c(pathin.poses[i].pose.position.x);
 		iz = 1+int(round(pathin.poses[i].pose.position.z / par_dz));
-		ROS_INFO("int iz: %i r: %i c: %i, ro: %i co: %i, yaw: %.2f z: %.0f",iz,r,c,ro,co,yaw_pose,pathin.poses[i].pose.position.z);
+	//	ROS_INFO("int iz: %i r: %i c: %i, ro: %i co: %i, yaw: %.2f z: %.0f",iz,r,c,ro,co,yaw_pose,pathin.poses[i].pose.position.z);
 		mapimgs_at_zlvlz[iz].at<cv::Vec3b>(r,c)[0] 	 = pathin.poses[i].pose.position.z*5;
 		mapimgs_at_zlvlz[iz].at<cv::Vec3b>(ro,co)[2] = pathin.poses[i].pose.position.z*5;
 	}
@@ -861,7 +861,7 @@ int main(int argc, char** argv)
 		ccnt++;
 		if(ccnt == 10){
 			ccnt = 0;
-			draw_imgs();
+	//		draw_imgs();
 		}
 		ROS_INFO("Cnt %i",cnt);
 		building_centroid.header = hdr();

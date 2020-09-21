@@ -59,7 +59,7 @@
 
 tf2_ros::Buffer tfBuffer;
 ros::Publisher pub_target;
-geometry_msgs::Point p,pos,cmd_pos;
+geometry_msgs::Point test_target,p,pos,cmd_pos;
 geometry_msgs::Vector3 rpy,vlp_rpy;
 geometry_msgs::PoseStamped target_active;
 nav_msgs::Path path_visited,path_unknown;
@@ -71,7 +71,7 @@ std::vector<geometry_msgs::Point> paths_side_centers;
 std::vector<int> targetindexes_sent;
 std::vector<int> blacklist;
 std::vector<int> blacklist_paths_side;
-
+bool got_test_target;
 void vstd_cb(const nav_msgs::Path::ConstPtr& msg){
   path_visited = *msg;
 }
@@ -319,7 +319,7 @@ void update_pos(){
 	pos.z = transformStamped.transform.translation.z;
 	pos_yaw = tf::getYaw(transformStamped.transform.rotation);
 	float target_dst = get_dst2d(pos,target_active.pose.position);
-	if(!got_test_target && _dst < 6 || (ros::Time::now()-target_active.header.stamp).toSec() > 10.0 && path_unknown.poses.size() > 0){
+	if(!got_test_target && target_dst < 6 || (ros::Time::now()-target_active.header.stamp).toSec() > 10.0 && path_unknown.poses.size() > 0){
 		get_next_target();
 	}
 }
@@ -343,7 +343,7 @@ void mb_result_cb(const std_msgs::Bool::ConstPtr& msg){
 	if(!msg->data)
 		get_next_target();
 }
-void test_target_cb(const geometr_msgs::PointStamped::ConstPtr& msg){
+void test_target_cb(const geometry_msgs::PointStamped::ConstPtr& msg){
 	test_target = msg->point;
 	got_test_target = true;
 }

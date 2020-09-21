@@ -60,7 +60,18 @@ void set_xy_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
 	odom.pose.pose.position.x = msg->point.x;
 	odom.pose.pose.position.y = msg->point.y;
 }
-
+float get_hdng(geometry_msgs::Point p1,geometry_msgs::Point p0){
+  float dx = p1.x - p0.x;
+  float dy = p1.y - p0.y;
+  return atan2(dy,dx);
+}
+void set_xyz_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
+{
+	tf_odom_alt.transform.translation.z = msg->point.z;
+	yaw_odom = get_hdng(msg->point,odom.pose.pose.position);
+	odom.pose.pose.position.x = msg->point.x;
+	odom.pose.pose.position.y = msg->point.y;
+}
 int main(int argc, char **argv){
     ros::init(argc, argv, "tb_cmd_setpoint_node");
     ros::NodeHandle nh;
@@ -95,6 +106,7 @@ int main(int argc, char **argv){
 
     ros::Subscriber s4 			= nh.subscribe("/cmd_vel",             100,&twist_cb);
 		ros::Subscriber s1 			= nh.subscribe("/tb_cmd/set_yaw",100,&set_yaw_cb);
+		ros::Subscriber s5 			= nh.subscribe("/tb_cmd/set_xyz", 100,&set_xyz_cb);
 		ros::Subscriber s2 			= nh.subscribe("/tb_cmd/set_xy", 100,&set_xy_cb);
 		ros::Subscriber s3 			= nh.subscribe("/tb_cmd/set_z",  100,&set_z_cb);
     ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 100);

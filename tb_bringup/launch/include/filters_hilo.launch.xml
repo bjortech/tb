@@ -2,7 +2,7 @@
 <launch>
 	<node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pclcloud_to_laserscan_down">
         <remap from="cloud_in" to="/velodyne_points" />
-        <remap from="scan" to="/scan_down"/>
+        <remap from="scan" to="/scan_velodyne_down"/>
         <rosparam>
             target_frame: velodyne_down
             transform_tolerance: 0.35
@@ -22,7 +22,7 @@
       </node>
      <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pclcloud_to_laserscan_up">
         <remap from="cloud_in" to="/velodyne_points" />
-        <remap from="scan" to="/scan_up"/>
+        <remap from="scan" to="/scan_velodyne_up"/>
         <rosparam>
             target_frame: velodyne_up
             transform_tolerance: 0.35

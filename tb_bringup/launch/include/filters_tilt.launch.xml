@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
     <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pclcloud_to_laserscan0">
-      <remap from="cloud_in" to="/octomap_repub" />
+      <remap from="cloud_in" to="/assembled_cloud2" />
       <remap from="scan" to="/scan_tilt_down"/>
       <rosparam>
           target_frame: velodyne_tilt_down
@@ -21,7 +21,7 @@
       </rosparam>
     </node>
       <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pclcloud_to_laserscan1">
-            <remap from="cloud_in" to="/octomap_repub" />
+            <remap from="cloud_in" to="/assembled_cloud2" />
             <remap from="scan" to="/scan_tilt_up"/>
             <rosparam>
                 target_frame: velodyne_tilt_up

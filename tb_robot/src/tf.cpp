@@ -18,7 +18,7 @@
 
 tf2_ros::Buffer tfBuffer;
 geometry_msgs::Vector3 rpy;
-geometry_msgs::TransformStamped tf_xyz,tf_xy_yaw,tf_z,tf_roll_pitch,tf_map;
+geometry_msgs::TransformStamped tf_xyz,tf_xy_yaw,tf_z,tf_roll_pitch,tf_map,tf_up,tf_dn;
 
 void attitude_quaternion_cb(const geometry_msgs::QuaternionStamped::ConstPtr& msg){
   tf2::Matrix3x3 q(tf2::Quaternion(msg->quaternion.x, msg->quaternion.y, msg->quaternion.z, msg->quaternion.w));
@@ -49,6 +49,14 @@ int main(int argc, char **argv){
     tf_xy_yaw.child_frame_id          = "base_footprint";
     tf_xy_yaw.transform.rotation.w    = 1;
 
+		tf_dn.header.frame_id         = "base_stabilized";
+    tf_dn.child_frame_id          = "base_stabilized_down";
+    tf_dn.transform.rotation.w    = 1;
+
+		tf_up.header.frame_id         = "base_stabilized";
+		tf_up.child_frame_id          = "base_stabilized_up";
+		tf_up.transform.rotation.w    = 1;
+
     tf_z.header.frame_id         = "base_footprint";
     tf_z.child_frame_id          = "base_stabilized";
     tf_z.transform.rotation.w    = 1;
@@ -74,7 +82,7 @@ int main(int argc, char **argv){
       tf_xyz.transform.translation   	 = tf_xy_yaw.transform.translation;
       tf_xyz.transform.translation.z 	 = tf_z.transform.translation.z;
 
-			tf_map.header.stamp = tf_xyz.header.stamp = tf_z.header.stamp = tf_roll_pitch.header.stamp = tf_xy_yaw.header.stamp = ros::Time::now();
+			tf_dn.header.stamp = tf_up.header.stamp = tf_map.header.stamp = tf_xyz.header.stamp = tf_z.header.stamp = tf_roll_pitch.header.stamp = tf_xy_yaw.header.stamp = ros::Time::now();
 
   		tf_b.sendTransform(tf_roll_pitch);
       tf_b.sendTransform(tf_xy_yaw);

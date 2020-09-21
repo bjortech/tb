@@ -49,7 +49,10 @@ catkin_package(
 #INCLUDE_DIRS include
  LIBRARIES tb_edto
 )
-
+add_executable(tb_edto_sphere_auto_node src/sphere_auto.cpp)
+target_link_libraries(tb_edto_sphere_auto_node
+		${catkin_LIBRARIES}
+		${OpenCV_LIBRARIES})
 add_executable(tb_edto_poly_auto_node src/poly_auto.cpp)
 target_link_libraries(tb_edto_poly_auto_node
     ${catkin_LIBRARIES}

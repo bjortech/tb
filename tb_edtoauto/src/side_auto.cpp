@@ -68,7 +68,7 @@ ros::Time last_sec;
 double par_min_distance,par_maprad,par_dz;
 double par_dst_target,par_dst_margin,par_dz_max,par_cluster_max_spacing;
 
-geometry_msgs::PolygonStamped poly_cleared,poly_obstacles;
+geometry_msgs::PolygonStamped poly_obs,poly_cleared,poly_obstacles;
 nav_msgs::Path path_raycast,path_visited;
 std::vector<std::vector<geometry_msgs::Point32>> clusters;
 std_msgs::Header hdr(){
@@ -170,11 +170,22 @@ bool outside_octomap(std::vector<float> bbvec){
 	else
 		return false;
 }
+bool is_point32_in_poly(geometry_msgs::PolygonStamped poly_to_check,geometry_msgs::Point32 pin,float lim){
+  float res,dst;
+	if(poly_to_check.polygon.points.size() == 0)
+    return false;
+  for(int i = 0; i < poly_to_check.polygon.points.size(); i++){
+     if(get_dst2d32(poly_to_check.polygon.points[i],pin) < lim)
+        return true;
+  }
+  return false;
+}
 nav_msgs::Path get_side(){
 	nav_msgs::Path pathout;
 	geometry_msgs::PoseStamped ps;
-	pathout.header.frame_id = ps.header.frame_id = "map";
-	pathout.header.stamp = ps.header.stamp = ros::Time::now();
+	poly_obs.header.frame_id = pathout.header.frame_id = ps.header.frame_id = "map";
+	poly_obs.header.stamp = pathout.header.stamp = ps.header.stamp = ros::Time::now();
+
 	for(int z = oct_zmin; z < oct_zmax; z++){
 		for(int y = oct_ymin; y < oct_ymax; y++){
 	    for(int x = oct_xmin; x < oct_xmax; x++){
@@ -183,6 +194,13 @@ nav_msgs::Path get_side(){
 	      float d;
 	      edf_ptr.get()->getDistanceAndClosestObstacle(p,d,closestObst);
 	      if(abs(d - par_dst_target) < par_dst_margin){
+					geometry_msgs::Point32 pobs;
+					pobs.x = round(closestObst.x());
+					pobs.y = round(closestObst.y());
+					pobs.z = round(closestObst.z());
+					//ROS_INFO("p.x %.0f %.0f %.0f closestObst.x %.0f %.0f %.0f pnt.x %.0f %.0f %.0f d: %.0f",p.x(),p.y(),p.z(),closestObst.x(),closestObst.y(),closestObst.z(),pobs.x,pobs.y,pobs.z,d);
+				//	if(!is_point32_in_poly(poly_obs,pobs,1.0))
+						poly_obs.polygon.points.push_back(pobs);
 	        ps.pose.orientation = tf::createQuaternionMsgFromYaw(atan2(closestObst.y() - p.y(),closestObst.x() - p.x()));
 					ps.pose.position.x = x;					ps.pose.position.y = y;					ps.pose.position.z = z;
 	        pathout.poses.push_back(ps);
@@ -291,7 +309,7 @@ std::vector<std::vector<geometry_msgs::Point32>> find_clusters(geometry_msgs::Po
 		if(get_dst2d32(polyin.polygon.points[i],polyin.polygon.points[i-1]) < par_cluster_max_spacing)
 			cluster.push_back(polyin.polygon.points[i]);
 		else if(cluster.size() > 0){
-			ROS_INFO("Cluster[%i]: %i pnts",clustersout.size(),cluster.size());
+		//	ROS_INFO("Cluster[%i]: %i pnts",clustersout.size(),cluster.size());
 			clustersout.push_back(cluster);
 			cluster.resize(0);
 		}
@@ -324,7 +342,7 @@ void path_visited_cb(const nav_msgs::Path::ConstPtr& msg){
 }
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "tb_edto_side_auto_node");
+  ros::init(argc, argv, "tb_edto_sideauto_node");
 	ros::NodeHandle nh;
 	ros::NodeHandle private_nh("~");
 	private_nh.param("update_area_sidelength", par_maprad, 30.0);
@@ -344,7 +362,8 @@ int main(int argc, char** argv)
 	ros::Subscriber s2  = nh.subscribe("/tb_edto/poly_obstacles",1,poly_obstacles_cb);
 	ros::Subscriber s3  = nh.subscribe("/tb_edto/path_raycast",1,path_raycast_cb);
 	ros::Subscriber s4  = nh.subscribe("/tb_world/path_visited",1,path_visited_cb);
-	pub_path  					= nh.advertise<nav_msgs::Path>("/tb_edto/path_side",100);
+	pub_path  					= nh.advertise<nav_msgs::Path>("/tb_edto/sideauto_path",100);
+	ros::Publisher pub_poly = nh.advertise<geometry_msgs::PolygonStamped>("/tb_edto/sideauto_obstacles",100);
 	ros::Rate rate(1.0);
 	int cluster_count = 0;
 	nav_msgs::Path path_side;
@@ -353,10 +372,12 @@ int main(int argc, char** argv)
 		if(got_map){
 			if(clusters.size() > 0){
 				if(cluster_count < clusters.size()){
-					ROS_INFO("clusters[%i],cluster_count: %i pathout: %i",clusters.size(),cluster_count,path_side.poses.size());
+					//ROS_INFO("clusters[%i],cluster_count: %i pathout: %i",clusters.size(),cluster_count,path_side.poses.size());
+
 					path_side = get_side_path(clusters[cluster_count]);
 					cluster_count++;
 					pub_path.publish(path_side);
+					pub_poly.publish(poly_obs);
 				}
 				else
 					cluster_count = 0;

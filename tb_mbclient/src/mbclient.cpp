@@ -25,7 +25,9 @@ std_msgs::Bool failure;
 geometry_msgs::PointStamped point;
 tf2_ros::Buffer tfBuffer;
 ros::ServiceClient path_client;
-ros::Publisher pub_plan;
+ros::Publisher pub_plan,pub_cancel_msg;
+actionlib_msgs::GoalID cancel_msg;
+bool server_active;
 void targetpose_cb(const geometry_msgs::PoseStamped::ConstPtr& pose){
   if(pose->header.frame_id != ""){
     MoveBaseClient ac("move_base", true);
@@ -43,13 +45,14 @@ void targetpose_cb(const geometry_msgs::PoseStamped::ConstPtr& pose){
     goal.target_pose.pose.position.y = pose->pose.position.y;
     goal.target_pose.pose.orientation = pose->pose.orientation;
 
-
+		server_active = true;
     ROS_INFO("Sending goal");
     ac.sendGoal(goal);
     ac.waitForResult();
 
     if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
         ROS_INFO("You have arrived to the goal position");
+
         result_pub.publish(success);
     }
     else{
@@ -58,6 +61,13 @@ void targetpose_cb(const geometry_msgs::PoseStamped::ConstPtr& pose){
     }
   }
 }
+void set_xyz_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
+{
+	if(server_active){
+		server_active = false;
+		pub_cancel_msg.publish(cancel_msg);
+	}
+}
 int main(int argc, char **argv) {
   ros::init(argc, argv, "tb_mbclient_node");
   ros::NodeHandle nh;
@@ -65,6 +75,8 @@ int main(int argc, char **argv) {
   success.data = true;
   failure.data = false;
 	ros::Subscriber s  = nh.subscribe("/tb_cmd/mb_pose_target", 10,&targetpose_cb);
-  result_pub  = nh.advertise<std_msgs::Bool>("/tb_cmd/mb_result",10);
+	ros::Subscriber s5 			= nh.subscribe("/tb_cmd/set_xyz", 100,&set_xyz_cb);
+	result_pub  = nh.advertise<std_msgs::Bool>("/tb_cmd/mb_result",10);
+	pub_cancel_msg  = nh.advertise<actionlib_msgs::GoalID>("/move_base/cancel",10);
   ros::spin();
 }

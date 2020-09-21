@@ -61,18 +61,19 @@ geometry_msgs::Point pos;
 geometry_msgs::PoseStamped target_active;
 float pos_yaw;
 tf2_ros::Buffer tfBuffer;
-nav_msgs::Path path_cmd;
+nav_msgs::Path path_cmd,path_targets;
 std::vector<float> zmin_vec;
 float zmin_ave;
 int que_size = 10;
 float pos_z_min = 5.0;
-geometry_msgs::PointStamped pos_front;
+geometry_msgs::PointStamped target_xyz,pos_front;
 geometry_msgs::Vector3 vlp_rpy;
 int path_cmd_i = 0;
 nav_msgs::Path path_visited,path_unknown,path_active_in,path_active_elevated;
 std_msgs::Float64 zmin_msg;
-double par_zclearing;
+double par_zclearing,par_dz;
 bool everyother;
+geometry_msgs::PoseStamped target;
 std_msgs::Header hdr(){
   std_msgs::Header header;
   header.frame_id = "map";
@@ -122,6 +123,12 @@ float get_shortest(float target_heading,float actual_hdng){
   else if(a < -M_PI)a += M_PI*2;
   return a;
 }
+float get_zn(float z_target){
+	return (floor(z_target / par_dz*2) + 1);
+}
+float get_rounded_z(float z_target){
+	return par_dz * 2 * get_zn(z_target);
+}
 float get_zmax_que(){
 	float zmx = 0;
 	float zmin_zum = 0;
@@ -150,11 +157,32 @@ float get_zmx_path(nav_msgs::Path pathin){
 	}
 	return zmn;
 }
+void target_path_cb(const nav_msgs::Path::ConstPtr& msg){
+	path_targets = *msg;
+}
+void target_cb(const geometry_msgs::PoseStamped::ConstPtr& msg){
+ 	target = *msg;
+}
 void elevated_path_cb(const nav_msgs::Path::ConstPtr& msg){
 	path_active_elevated = *msg;
 }
 void global_plan_cb(const nav_msgs::Path::ConstPtr& msg){
 	pub_elevate_path.publish(*msg);
+}
+int get_closest_i(nav_msgs::Path pathin,geometry_msgs::Point pin){
+  float res,dst;
+  int closest_i = 0;
+  float closest_dst = 100;
+  if(pathin.poses.size() == 0)
+    return closest_i;
+  for(int i = 0; i < pathin.poses.size(); i++){
+    float dst = get_dst2d(pathin.poses[i].pose.position,pin);
+     if(dst < closest_dst){
+       closest_dst = dst;
+       closest_i = i;
+     }
+  }
+  return closest_i;
 }
 
 void update_pos(){
@@ -183,7 +211,14 @@ void update_pos(){
 	cmd_elev_point.point.x = transformStamped.transform.translation.x;
 	cmd_elev_point.point.y = transformStamped.transform.translation.y;
 	cmd_elev_point.point.z = transformStamped.transform.translation.z;
+	if(everyother)
+		pos = cmd_elev_point.point;
+
 	pub_elevate_point.publish(cmd_elev_point);
+}
+void cmd_xyz_cb(const geometry_msgs::PointStamped::ConstPtr& msg){
+	target_xyz.point = msg->point;
+	target_xyz.header.stamp = ros::Time::now();
 }
 int main(int argc, char** argv)
 {
@@ -191,24 +226,36 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
 	ros::NodeHandle private_nh("~");
 	private_nh.param("safety_margin_z", par_zclearing, 5.0);
+	private_nh.param("z_interval", par_dz, 3.0);
 
 	tf2_ros::TransformListener tf2_listener(tfBuffer);
 	pub_elevate_point	 = nh.advertise<geometry_msgs::PointStamped>("/tb_abmap/get_elevation_point",10);
 	pub_elevate_path   = nh.advertise<nav_msgs::Path>("/tb_abmap/get_elevation_path",100);
-
+	ros::Subscriber a1  = nh.subscribe("/tb_cmd/path_targets",10,target_path_cb);
+	ros::Subscriber a3  = nh.subscribe("/tb_cmd/mb_pose_target",10,target_cb);
 	ros::Subscriber a2  = nh.subscribe("/tb_abmap/elevated_path",10,elevated_path_cb);
 	ros::Subscriber a0  = nh.subscribe("/tb_abmap/elevated_point", 10,elevated_point_cb);
 	ros::Subscriber sm1 = nh.subscribe("/move_base/NavfnROS/plan",100,&global_plan_cb);
+	ros::Subscriber sm2 = nh.subscribe("/tb_cmd/set_xyz",100,&cmd_xyz_cb);
 	ros::Publisher pub_target_setpoint_z = nh.advertise<std_msgs::Float64>("/tb_cmd/set_z",10);
 	ros::Rate rate(2.0);
 
 	ros::Time time_last = ros::Time::now();
+	float ztar = 0;
 	while(ros::ok()){
 		rate.sleep();
     ros::spinOnce();
 		update_pos();
-		zmin_msg.data = fmax(pos_z_min,get_zmx_path(path_active_elevated)) + par_zclearing;
-		pub_target_setpoint_z.publish(zmin_msg);
+		int ci = get_closest_i(path_targets,pos);
+		if(ci > 0 && ci < path_targets.poses.size())
+			ztar = fmax(path_targets.poses[ci].pose.position.z,target.pose.position.z);
+		else
+			ztar = target.pose.position.z;
+		float zmin_temp = fmax(pos_z_min,get_zmx_path(path_active_elevated)) + par_zclearing;
+		zmin_msg.data = fmax(ztar,zmin_temp);
+		if((ros::Time::now()-target_xyz.header.stamp).toSec() > 2.0){
+			pub_target_setpoint_z.publish(zmin_msg);
+		}
   }
   return 0;
 }

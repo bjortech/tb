@@ -1,22 +1,21 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 89
+    Help Height: 90
     Name: Displays
     Property Tree Widget:
       Expanded:
         - /Global Options1
         - /Status1
-        - /OccupancyGrid1
-        - /PointStamped1
-        - /PointStamped2
-        - /Path1
         - /Path2
-        - /Polygon1
-        - /PointStamped3
         - /Path3
-        - /Path3/Status1
-      Splitter Ratio: 0.5348837375640869
-    Tree Height: 715
+        - /Path4
+        - /Path5
+        - /Path6
+        - /Path7
+        - /Path8
+        - /Path9
+      Splitter Ratio: 0.24409449100494385
+    Tree Height: 234
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -35,7 +34,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: LaserScan
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -55,13 +54,127 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        base_footprint:
+          Value: true
+        base_link:
+          Value: true
+        base_perfect:
+          Value: true
+        base_perfect_alt:
+          Value: true
+        base_position:
+          Value: true
+        base_stabilized:
+          Value: true
+        cam0:
+          Value: true
+        cam0_optical:
+          Value: true
+        cam0_rect_optical:
+          Value: true
+        cam1:
+          Value: true
+        cam1_optical:
+          Value: true
+        cam1_rect_optical:
+          Value: true
+        cam_base:
+          Value: true
+        camera_base_link:
+          Value: true
+        camera_depth_frame:
+          Value: true
+        camera_depth_optical_frame:
+          Value: true
+        camera_link:
+          Value: true
+        camera_rgb_frame:
+          Value: true
+        camera_rgb_optical_frame:
+          Value: true
+        ll40:
+          Value: true
+        map:
+          Value: true
+        mx64:
+          Value: true
+        odom:
+          Value: true
+        pan_link:
+          Value: true
+        pan_tilt_base:
+          Value: true
+        tilt_connector_link:
+          Value: true
+        tilt_link:
+          Value: true
+        velodyne:
+          Value: true
+        velodyne_aligned:
+          Value: true
+        velodyne_down:
+          Value: true
+        velodyne_link:
+          Value: true
+        velodyne_tilt_down:
+          Value: true
+        velodyne_tilt_up:
+          Value: true
+        velodyne_up:
+          Value: true
       Marker Scale: 0.30000001192092896
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        map:
+          odom:
+            base_footprint:
+              base_stabilized:
+                base_link:
+                  camera_base_link:
+                    camera_link:
+                      camera_depth_frame:
+                        camera_depth_optical_frame:
+                          {}
+                      camera_rgb_frame:
+                        camera_rgb_optical_frame:
+                          {}
+                  ll40:
+                    {}
+                  mx64:
+                    velodyne_link:
+                      velodyne:
+                        {}
+                      velodyne_aligned:
+                        velodyne_down:
+                          {}
+                        velodyne_tilt_down:
+                          {}
+                        velodyne_tilt_up:
+                          {}
+                        velodyne_up:
+                          {}
+                  pan_tilt_base:
+                    pan_link:
+                      tilt_link:
+                        cam_base:
+                          cam0:
+                            cam0_optical:
+                              cam0_rect_optical:
+                                {}
+                            cam1:
+                              cam1_optical:
+                                cam1_rect_optical:
+                                  {}
+                        tilt_connector_link:
+                          {}
+            base_perfect:
+              base_perfect_alt:
+                {}
+            base_position:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -110,52 +223,6 @@ Visualization Manager:
       Name: PointStamped
       Radius: 1
       Topic: /tb_edto/get_side2d
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 164; 0; 0
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.5
-      Length: 0.30000001192092896
-      Line Style: Billboards
-      Line Width: 0.029999999329447746
-      Name: Path
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 115; 210; 22
-      Pose Style: Arrows
-      Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 1
-      Topic: /tb_edto/path2d_side
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 52; 101; 164
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.5
-      Length: 1
-      Line Style: Billboards
-      Line Width: 0.029999999329447746
-      Name: Path
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 143; 89; 2
-      Pose Style: Arrows
-      Radius: 0.009999999776482582
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 1
-      Topic: /tb_edto/path_best
       Unreliable: false
       Value: true
     - Alpha: 1
@@ -209,6 +276,564 @@ Visualization Manager:
       Topic: /tb_edto/path_visited
       Unreliable: false
       Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 206; 92; 0
+      Enabled: true
+      Head Diameter: 0.5
+      Head Length: 0.5
+      Length: 0.30000001192092896
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 143; 89; 2
+      Pose Style: Arrows
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.20000000298023224
+      Shaft Length: 1
+      Topic: /tb_edto/side2d_path_large
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 164; 0; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.5
+      Length: 0.30000001192092896
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 115; 210; 22
+      Pose Style: Arrows
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 1
+      Topic: /tb_edto/path2d_side
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 52; 101; 164
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.5
+      Length: 1
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 143; 89; 2
+      Pose Style: Arrows
+      Radius: 0.009999999776482582
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 1
+      Topic: /tb_test/path_targets
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 52; 101; 164
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.5
+      Length: 1
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 143; 89; 2
+      Pose Style: Arrows
+      Radius: 0.009999999776482582
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 1
+      Topic: /tb_test/path_organize_1
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 164; 0; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.5
+      Length: 0.30000001192092896
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 115; 210; 22
+      Pose Style: Arrows
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 1
+      Topic: /tb_test/path_organize_2
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 186; 189; 182
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.5
+      Length: 0.30000001192092896
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 186; 189; 182
+      Pose Style: Arrows
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 1
+      Topic: /tb_debug/path_targets_sent
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 52; 101; 164
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.699999988079071
+      Length: 1
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: vstd
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 164; 0; 0
+      Pose Style: Arrows
+      Radius: 0.009999999776482582
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 2
+      Topic: /tb_world/path_visited
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 173; 127; 168
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /scan_stabilized_down
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 186; 189; 182
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.5
+      Length: 1
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: mb
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 186; 189; 182
+      Pose Style: Axes
+      Radius: 0.10000000149011612
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 1
+      Topic: /move_base/DWAPlannerROS/global_plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 186; 189; 182
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.5
+      Length: 0.30000001192092896
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: mb
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 186; 189; 182
+      Pose Style: Axes
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 1
+      Topic: /move_base/NavfnROS/plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 245; 121; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.5
+      Length: 1
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: mb
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 186; 189; 182
+      Pose Style: Axes
+      Radius: 0.10000000149011612
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 1
+      Topic: /move_base/DWAPlannerROS/local_plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 13421
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 186; 189; 182
+      Max Intensity: 114
+      Min Color: 0; 0; 0
+      Min Intensity: 3
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /assembled_cloud2
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 173; 127; 168
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /scan_stabilized
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz/Pose
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Shaft Length: 2
+      Shaft Radius: 0.30000001192092896
+      Shape: Arrow
+      Topic: /tb_cmd/mb_pose_target
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/LaserScan
+      Color: 206; 92; 0
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 196; 160; 0
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /scan_stabilized_up
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/LaserScan
+      Color: 237; 212; 0
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 196; 160; 0
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 5
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /scan_up
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Class: rviz/Polygon
+      Color: 25; 255; 0
+      Enabled: true
+      Name: Polygon
+      Topic: /tb_edto/poly_cleared
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Class: rviz/Polygon
+      Color: 239; 41; 41
+      Enabled: true
+      Name: Polygon
+      Topic: /tb_edto/poly_obstacles
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Class: rviz/Polygon
+      Color: 32; 74; 135
+      Enabled: true
+      Name: Polygon
+      Topic: /tb_edto/poly_side
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Class: rviz/Polygon
+      Color: 115; 210; 22
+      Enabled: true
+      Name: Polygon
+      Topic: /tb_edto/poly_down
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 29.5
+        Min Value: 0.5
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 186; 189; 182
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /octomap_point_cloud_centers
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /move_base/global_costmap/costmap
+      Unreliable: false
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /move_base/local_costmap/costmap
+      Unreliable: false
+      Use Timestamp: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 164; 0; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.5
+      Length: 0.30000001192092896
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 115; 210; 22
+      Pose Style: Arrows
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 1
+      Topic: /move_base/DWAPlannerROS/local_plan
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /left_rgb_rect/image_rect_color
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 52; 101; 164
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.699999988079071
+      Length: 1
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 164; 0; 0
+      Pose Style: Arrows
+      Radius: 0.009999999776482582
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 2
+      Topic: /tb_world/path_visited
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 239; 41; 41
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.699999988079071
+      Length: 1
+      Line Style: Billboards
+      Line Width: 0.029999999329447746
+      Name: targets
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 114; 159; 207
+      Pose Style: Arrows
+      Radius: 0.009999999776482582
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 2
+      Topic: /tb_debug/path_targets
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -237,25 +862,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 176.8363494873047
+      Distance: 296.1599426269531
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -13.841930389404297
-        Y: 10.763911247253418
-        Z: 5.442216396331787
+        X: 0
+        Y: 0
+        Z: 0
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5097976326942444
-      Target Frame: base_link
+      Pitch: 0.9703980684280396
+      Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.957237243652344
+      Yaw: 0.6103982925415039
     Saved: ~
 Window Geometry:
   Displays:
@@ -263,7 +888,9 @@ Window Geometry:
   Height: 1025
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000015b00000361fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000361000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006501000002d6000000c80000000000000000000000010000010000000361fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d00000361000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073d00000040fc0100000002fb0000000800540069006d006501000000000000073d000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000004d60000036100000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Image:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd00000004000000000000027d00000361fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000181000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006501000001c4000001da0000001600ffffff000000010000010000000361fc0200000004fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0049006d006100670065010000003d0000022a0000000000000000fb0000000a00560069006500770073000000003d00000361000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073d00000040fc0100000002fb0000000800540069006d006501000000000000073d000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000004ba0000036100000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:

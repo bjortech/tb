@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="assembled_cloud_to_laserscan_dwn">
+        <remap from="cloud_in" to="/assembled_cloud2" />
+        <remap from="scan" to="/scan_stabilized_down"/>
+        <rosparam>
+            target_frame: base_stabilized
+            transform_tolerance: 0.35
+            min_height: -3.0
+            max_height: -1.0
+
+            angle_min: -1.57079
+            angle_max: 1.57079
+            angle_increment: 0.006168878806972223
+            scan_time: 0.01250000292204
+            range_min: 3.0
+            range_max: 50.0
+            use_inf: true
+            inf_epsilon: 1.0
+            concurrency_level: 0
+        </rosparam>
+      </node>
+	<node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="assembled_cloud_to_laserscan_mid">
+        <remap from="cloud_in" to="/assembled_cloud2" />
+        <remap from="scan" to="/scan_stabilized_mid"/>
+        <rosparam>
+            target_frame: base_stabilized
+            transform_tolerance: 0.35
+            min_height: -1.0
+            max_height: -1.0
+
+            angle_min: -1.57079
+            angle_max: 1.57079
+            angle_increment: 0.006168878806972223
+            scan_time: 0.01250000292204
+            range_min: 3.0
+            range_max: 50.0
+            use_inf: true
+            inf_epsilon: 1.0
+            concurrency_level: 0
+        </rosparam>
+      </node>
+	 <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="assembled_cloud_to_laserscan_up">
+        <remap from="cloud_in" to="/assembled_cloud2" />
+        <remap from="scan" to="/scan_stabilized_up"/>
+        <rosparam>
+            target_frame: base_stabilized
+            transform_tolerance: 0.35
+            min_height: 1.0
+            max_height: 2.0
+
+            angle_min: -1.57079
+            angle_max: 1.57079
+            angle_increment: 0.006168878806972223
+            scan_time: 0.01250000292204
+            range_min: 3.0
+            range_max: 50.0
+            use_inf: true
+            inf_epsilon: 1.0
+            concurrency_level: 0
+        </rosparam>
+      </node>
+</launch>
