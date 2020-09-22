@@ -5,6 +5,10 @@ Generic Highlevel Autonomy Framework
 
 Dette er det minimale systemet som må til for å få roboten til å flytte seg rundt i en simpel simulering. Her brukes fundamentale robotikk-komponenter som finnes i roboter over hele verden. 
 
+# Automatisert installasjon av ROS && bygging/sourcing av denne branch: 
+
+https://github.com/bjortech/tb/tree/freak/tb_installscripts
+
 # Byggeklosser fra eksterne parter som launches i eksempelet: 
 
 move_base: 
