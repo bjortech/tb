@@ -3,9 +3,9 @@ Generic Highlevel Autonomy Framework
 
 # Freak introduksjon!
 
-Dette er det minimale systemet som må til for å få roboten til å flytte seg rundt i en simpel simulering. Her brukes de grunnleggende byggeklossene for eksempelvis standard lagerroboter. 
+Dette er det minimale systemet som må til for å få roboten til å flytte seg rundt i en simpel simulering. Her brukes fundamentale robotikk-komponenter som finnes i roboter over hele verden. 
 
-# Byggeklosser fra eksterne parter - dette er 95% av systemet! 
+# Byggeklosser fra eksterne parter som launches i eksempelet: 
 
 move_base: 
 http://wiki.ros.org/move_base
