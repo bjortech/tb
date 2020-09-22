@@ -8,4 +8,4 @@ git clone -b freak https://github.com/bjortech/tb
 cd ~/tb_ws
 catkin_make
 source ~/.bashrc
-roslaunch tb_bringup tb_premade_octomap.launch
+roslaunch tb_bringup freak.launch
