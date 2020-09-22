@@ -7,5 +7,5 @@ source ~/.bashrc
 git clone -b freak https://github.com/bjortech/tb
 cd ~/tb_ws
 catkin_make
-source ~/.bashrc
+source ~/tb_ws/devel/setup.bash
 roslaunch tb_bringup freak.launch
