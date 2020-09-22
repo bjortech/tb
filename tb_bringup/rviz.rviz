@@ -3,13 +3,7 @@ Panels:
     Help Height: 89
     Name: Displays
     Property Tree Widget:
-      Expanded:
-        - /pc2_assembled1
-        - /edto_side1
-        - /edto_down1
-        - /global_costmap1
-        - /raycast1/Status1
-        - /down_auto1
+      Expanded: ~
       Splitter Ratio: 0.5494186282157898
     Tree Height: 449
   - Class: rviz/Selection
@@ -30,7 +24,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: pc2_assembled
+    SyncSource: mb_traj
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -136,7 +130,7 @@ Visualization Manager:
           Value: true
         velodyne_up:
           Value: true
-      Marker Scale: 0.30000001192092896
+      Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
@@ -191,131 +185,6 @@ Visualization Manager:
               {}
       Update Interval: 0
       Value: true
-    - Alpha: 1
-      Class: rviz/RobotModel
-      Collision Enabled: false
-      Enabled: false
-      Links:
-        All Links Enabled: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
-      Name: RobotModel
-      Robot Description: robot_description
-      TF Prefix: ""
-      Update Interval: 0
-      Value: false
-      Visual Enabled: true
-    - Alpha: 0.5
-      Buffer Length: 1
-      Class: rviz/Range
-      Color: 78; 154; 6
-      Enabled: true
-      Name: Range
-      Queue Size: 100
-      Topic: /range_data
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 29.5
-        Min Value: 0.5
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud2
-      Color: 211; 215; 207
-      Color Transformer: FlatColor
-      Decay Time: 5
-      Enabled: true
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 100
-      Min Color: 0; 0; 0
-      Min Intensity: 1
-      Name: pc2_assembled
-      Position Transformer: XYZ
-      Queue Size: 10
-      Selectable: true
-      Size (Pixels): 2
-      Size (m): 0.009999999776482582
-      Style: Points
-      Topic: /velodyne_points
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: true
-    - Alpha: 0.20000000298023224
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 237; 212; 0
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 0.30000001192092896
-      Line Style: Billboards
-      Line Width: 0.009999999776482582
-      Name: edto_sphere
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 239; 41; 41
-      Pose Style: Arrows
-      Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.5
-      Topic: /tb_edto/sphere
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 138; 226; 52
-      Enabled: true
-      Head Diameter: 0.15000000596046448
-      Head Length: 0.5
-      Length: 2
-      Line Style: Billboards
-      Line Width: 0.019999999552965164
-      Name: edto_side
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 32; 74; 135
-      Pose Style: Arrows
-      Radius: 0.009999999776482582
-      Shaft Diameter: 0.05000000074505806
-      Shaft Length: 2
-      Topic: /tb_edto/side
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 114; 159; 207
-      Enabled: true
-      Head Diameter: 0.15000000596046448
-      Head Length: 0.5
-      Length: 2
-      Line Style: Billboards
-      Line Width: 0.019999999552965164
-      Name: edto_down
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 32; 74; 135
-      Pose Style: Arrows
-      Radius: 0.009999999776482582
-      Shaft Diameter: 0.05000000074505806
-      Shaft Length: 2
-      Topic: /tb_edto/down
-      Unreliable: false
-      Value: true
     - Alpha: 0.20000000298023224
       Class: rviz/Map
       Color Scheme: costmap
@@ -335,58 +204,6 @@ Visualization Manager:
       Topic: /move_base/local_costmap/costmap
       Unreliable: false
       Use Timestamp: false
-      Value: true
-    - Alpha: 1
-      Class: rviz/Polygon
-      Color: 78; 154; 6
-      Enabled: true
-      Name: edto_cleared
-      Topic: /tb_edto/poly_cleared
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Class: rviz/Polygon
-      Color: 193; 125; 17
-      Enabled: true
-      Name: edto_unknown
-      Topic: /tb_edto/poly_unknown
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Class: rviz/Polygon
-      Color: 239; 41; 41
-      Enabled: true
-      Name: edto_obstacles
-      Topic: /tb_edto/poly_obstacles
-      Unreliable: false
-      Value: true
-    - Class: octomap_rviz_plugin/OccupancyGrid
-      Enabled: true
-      Max. Height Display: 3.4028234663852886e+38
-      Max. Octree Depth: 16
-      Min. Height Display: -3.4028234663852886e+38
-      Name: OccupancyGrid
-      Octomap Topic: /octomap_full
-      Queue Size: 5
-      Value: true
-      Voxel Alpha: 1
-      Voxel Coloring: Z-Axis
-      Voxel Rendering: Occupied Voxels
-    - Alpha: 1
-      Class: rviz/Polygon
-      Color: 136; 138; 133
-      Enabled: true
-      Name: get_poly_2d
-      Topic: /tb_roi/poly2d
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Class: rviz/Polygon
-      Color: 255; 255; 255
-      Enabled: true
-      Name: get_poly_3d
-      Topic: /tb_roi/poly
-      Unreliable: false
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -458,106 +275,6 @@ Visualization Manager:
       Unreliable: false
       Value: true
     - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 193; 125; 17
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 1.2000000476837158
-      Line Style: Billboards
-      Line Width: 0.029999999329447746
-      Name: tb_cmd_path
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: Axes
-      Radius: 0.05999999865889549
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic: /tb_cmd/path
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 114; 159; 207
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 1.2000000476837158
-      Line Style: Billboards
-      Line Width: 0.029999999329447746
-      Name: tb_cmd_path_active
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: Axes
-      Radius: 0.05999999865889549
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic: /tb_cmd/path_active
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 78; 154; 6
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 4
-      Line Style: Billboards
-      Line Width: 0.029999999329447746
-      Name: tb_path_elevate_costmap
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: Axes
-      Radius: 0.05999999865889549
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic: /tb_costmap/get_elevation_in_path
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 206; 92; 0
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 4
-      Line Style: Billboards
-      Line Width: 0.029999999329447746
-      Name: tb_abmap_pathelevate
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 252; 233; 79
-      Pose Style: Arrows
-      Radius: 0.05999999865889549
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 1
-      Topic: tb_abmap/elevated_path
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Class: rviz/Polygon
-      Color: 255; 255; 255
-      Enabled: true
-      Name: get_poly_3d
-      Topic: /tb_costmap/update_heightimg
-      Unreliable: false
-      Value: true
-    - Alpha: 1
       Axes Length: 1
       Axes Radius: 0.10000000149011612
       Class: rviz/Pose
@@ -569,202 +286,68 @@ Visualization Manager:
       Shaft Length: 2
       Shaft Radius: 0.20000000298023224
       Shape: Arrow
-      Topic: /tb_autonomy/active_target
+      Topic: /move_base/current_goal
       Unreliable: false
       Value: true
     - Alpha: 1
-      Class: rviz/Polygon
-      Color: 92; 53; 102
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 29.5
+        Min Value: 0.5
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 233; 185; 110
+      Color Transformer: FlatColor
+      Decay Time: 0
       Enabled: true
-      Name: get_polya_2d
-      Topic: /tb_autonomy/roi_poly
+      Invert Rainbow: false
+      Max Color: 115; 210; 22
+      Max Intensity: 100
+      Min Color: 0; 0; 0
+      Min Intensity: 1
+      Name: mb_potential
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /move_base/DWAPlannerROS/cost_cloud
       Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
     - Alpha: 1
-      Class: rviz/Polygon
-      Color: 92; 53; 102
-      Enabled: true
-      Name: get_polya_3d
-      Topic: /tb_autonomy/roi_poly2d
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Class: rviz/PointStamped
-      Color: 164; 0; 0
-      Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 1
-      Topic: /tb_autonomy/target_point
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Class: rviz/PointStamped
-      Color: 164; 0; 0
-      Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 1
-      Topic: /tb_abmap/elevated_point
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 78; 154; 6
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 4
-      Line Style: Billboards
-      Line Width: 0.029999999329447746
-      Name: tb_path_unknown
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: Axes
-      Radius: 0.20000000298023224
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic: /tb_world/path_unknown
-      Unreliable: false
-      Value: true
-    - Alpha: 0.20000000298023224
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 237; 212; 0
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 1
-      Line Style: Billboards
-      Line Width: 0.009999999776482582
-      Name: path_visisted
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 78; 154; 6
-      Pose Style: Arrows
-      Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.5
-      Topic: /tb_world/path_visited
-      Unreliable: false
-      Value: true
-    - Alpha: 0.20000000298023224
-      Buffer Length: 1
-      Class: rviz/Path
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 29.5
+        Min Value: 0.5
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
       Color: 204; 0; 0
+      Color Transformer: FlatColor
+      Decay Time: 0
       Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 4
-      Line Style: Billboards
-      Line Width: 0.009999999776482582
-      Name: costmap_updated
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 239; 41; 41
-      Pose Style: Axes
-      Radius: 1
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.5
-      Topic: /tb_autonomy/costmap_updated
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 100
+      Min Color: 0; 0; 0
+      Min Intensity: 1
+      Name: mb_traj
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /move_base/DWAPlannerROS/trajectory_cloud
       Unreliable: false
-      Value: true
-    - Alpha: 0.20000000298023224
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 0; 0; 0
-      Enabled: true
-      Head Diameter: 0.10000000149011612
-      Head Length: 0.20000000298023224
-      Length: 4
-      Line Style: Billboards
-      Line Width: 0.009999999776482582
-      Name: raycast
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 239; 41; 41
-      Pose Style: Arrows
-      Radius: 1
-      Shaft Diameter: 0.029999999329447746
-      Shaft Length: 1
-      Topic: /tb_edto/path_raycast
-      Unreliable: false
-      Value: true
-    - Alpha: 0.20000000298023224
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 78; 154; 6
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 4
-      Line Style: Billboards
-      Line Width: 0.009999999776482582
-      Name: down_auto
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 78; 154; 6
-      Pose Style: Arrows
-      Radius: 1
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 1
-      Topic: /tb_edto/down_auto
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Class: rviz/PointStamped
-      Color: 78; 154; 6
-      Enabled: true
-      History Length: 1
-      Name: down_auto_pnt
-      Radius: 1
-      Topic: /tb_edto/down_auto_point
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 138; 226; 52
-      Enabled: true
-      Head Diameter: 0.15000000596046448
-      Head Length: 0.5
-      Length: 2
-      Line Style: Billboards
-      Line Width: 0.019999999552965164
-      Name: edto_side
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 32; 74; 135
-      Pose Style: Arrows
-      Radius: 0.009999999776482582
-      Shaft Diameter: 0.05000000074505806
-      Shaft Length: 2
-      Topic: /tb_edto/path_side
-      Unreliable: false
-      Value: true
-    - Alpha: 0.699999988079071
-      Class: rviz/Map
-      Color Scheme: map
-      Draw Behind: false
-      Enabled: true
-      Name: Map
-      Topic: ""
-      Unreliable: false
-      Use Timestamp: false
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
   Enabled: true
   Global Options:
@@ -794,25 +377,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 26.301677703857422
+      Distance: 54.83677673339844
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 29.02273941040039
-        Y: 7.892632007598877
-        Z: 21.38883399963379
+        X: -0.08866311609745026
+        Y: -2.455435037612915
+        Z: -5.539730548858643
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5247997641563416
+      Pitch: 0.625400722026825
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 6.190415382385254
+      Yaw: 2.905850648880005
     Saved: ~
 Window Geometry:
   Displays:

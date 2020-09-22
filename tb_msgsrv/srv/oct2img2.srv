@@ -1,8 +1,0 @@
-octomap_msgs/Octomap octomap
-geometry_msgs/Point midpoint
-std_msgs/Float64 min_obs_dst
-std_msgs/Float64 max_obs_dst
-std_msgs/Float64 maprad
-std_msgs/Bool unknownAsOccupied
----
-sensor_msgs/Image mapimg

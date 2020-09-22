@@ -1,3 +1,0 @@
-octomap_msgs/Octomap octomap
----
-sensor_msgs/Image mapimg

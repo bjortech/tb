@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<!--Dette er den normale måten å launche flere forskjellige moduler på. Ved å bruke et hierarki av "includes" får man oversiktlig og fleksibel konfigurasjon-->
+	<include file="$(find tb_cmd)/launch/cmd.launch"/>
+	<include file="$(find tb_bringup)/launch/include/mb.launch.xml"/>
+	<include file="$(find tb_robot)/launch/robot.launch"/>
+	<include file="$(find tb_simulate)/launch/simulate.launch"/>
+
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find tb_bringup)/maps/map_slottet.yaml" />
+
+	<node pkg="rviz" type="rviz" name="rviz" args="-d $(find tb_bringup)/rviz.rviz"/>
+</launch>

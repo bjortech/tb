@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<launch>
-	<node type="tb_autonomy_costmap_node" pkg="tb_autonomy" name="tb_autonomy_costmap_node"/>
-	<node type="tb_autonomy_handler_node" pkg="tb_autonomy" name="tb_autonomy_handler_node" />
-	<node type="tb_autonomy_pathplanner_node" pkg="tb_autonomy" name="tb_autonomy_pathplanner_node" />
-	<node type="tb_autonomy_pathguard_node" pkg="tb_autonomy" name="tb_autonomy_pathguard_node" output="screen" />
-</launch>

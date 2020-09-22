@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<launch>
-	<node name="tb_abmap_frontier_node" pkg="tb_abmap" type="tb_abmap_frontier_node" respawn="true">
-		<param name="resolution" type="double" value="1.0" />
-	</node>	<node name="tb_abmap_elevator_node" pkg="tb_abmap" type="tb_abmap_elevator_node" respawn="true">
-	<param name="resolution" type="double" value="1.0" />
-	<param name="inflation_radius" type="double" value="3.0" />
-	</node>
-</launch>

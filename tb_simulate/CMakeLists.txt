@@ -23,17 +23,8 @@ include_directories(
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_executable(tb_sim_heightimg_to_sensor_pointcloud_node src/heightimg_to_sensor_pointcloud.cpp)
-target_link_libraries(tb_sim_heightimg_to_sensor_pointcloud_node
-    ${PCL_LIBRARIES}
-		${catkin_LIBRARIES}
-    ${OpenCV_LIBRARIES})
-
 add_executable(tb_simulate_actuatorresponse_node src/actuatorsresponse.cpp)
 target_link_libraries(tb_simulate_actuatorresponse_node ${catkin_LIBRARIES})
 
 add_executable(tb_simulate_djiresponse_node src/djiresponse.cpp)
 target_link_libraries(tb_simulate_djiresponse_node ${catkin_LIBRARIES})
-
-add_executable(tb_simulate_octrepub_node src/octrepub.cpp)
-target_link_libraries(tb_simulate_octrepub_node ${catkin_LIBRARIES})

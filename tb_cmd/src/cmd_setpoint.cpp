@@ -25,12 +25,11 @@
 #include <eigen3/Eigen/Core>
 #include <nav_msgs/Path.h>
 
-geometry_msgs::TransformStamped tff,tfh,tfrp,tfm,tf_odom,tf_odom_alt,tfa,tfa2,tfp,tfpos,tfb;
+geometry_msgs::TransformStamped tf_odom,tf_odom_alt;
 nav_msgs::Odometry odom;
 ros::Time time_last_v;
 double yaw_odom;
 tf2_ros::Buffer tfBuffer;
-bool active = true;
 nav_msgs::Path pathcmd;
 int pathcmd_i = 0;
 double constrainAngle(double x){
@@ -61,13 +60,17 @@ void set_xy_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
 	odom.pose.pose.position.x = msg->point.x;
 	odom.pose.pose.position.y = msg->point.y;
 }
-void pathcmd_i_cb(const std_msgs::UInt8::ConstPtr& msg)
-{
-	pathcmd_i = msg->data;
+float get_hdng(geometry_msgs::Point p1,geometry_msgs::Point p0){
+  float dx = p1.x - p0.x;
+  float dy = p1.y - p0.y;
+  return atan2(dy,dx);
 }
-void pathcmd_cb(const nav_msgs::Path::ConstPtr& msg)
+void set_xyz_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
 {
-	pathcmd = *msg;
+	tf_odom_alt.transform.translation.z = msg->point.z;
+	yaw_odom = get_hdng(msg->point,odom.pose.pose.position);
+	odom.pose.pose.position.x = msg->point.x;
+	odom.pose.pose.position.y = msg->point.y;
 }
 int main(int argc, char **argv){
     ros::init(argc, argv, "tb_cmd_setpoint_node");
@@ -103,35 +106,21 @@ int main(int argc, char **argv){
 
     ros::Subscriber s4 			= nh.subscribe("/cmd_vel",             100,&twist_cb);
 		ros::Subscriber s1 			= nh.subscribe("/tb_cmd/set_yaw",100,&set_yaw_cb);
+		ros::Subscriber s5 			= nh.subscribe("/tb_cmd/set_xyz", 100,&set_xyz_cb);
 		ros::Subscriber s2 			= nh.subscribe("/tb_cmd/set_xy", 100,&set_xy_cb);
 		ros::Subscriber s3 			= nh.subscribe("/tb_cmd/set_z",  100,&set_z_cb);
-		ros::Subscriber s5 			= nh.subscribe("/tb_cmd/path_active_index",  100,&pathcmd_i_cb);
-		ros::Subscriber s6 			= nh.subscribe("/tb_cmd/path_active",  100,&pathcmd_cb);
     ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 100);
     ros::Time time_last = ros::Time::now();
 
     tf_odom_alt.transform.translation.z = 10;
 
     while(ros::ok()){
-			ROS_INFO("Pathcmd: %i, pathcmd_i: %i",pathcmd.poses.size(),pathcmd_i);
-			if(pathcmd.poses.size() > 0 && pathcmd.poses.size() > pathcmd_i){
-				ROS_INFO("Pathcmd - odom from pathcmd");
-				odom.pose.pose.position.x 					= pathcmd.poses[pathcmd_i].pose.position.x;
-				odom.pose.pose.position.y 					= pathcmd.poses[pathcmd_i].pose.position.y;
-				tf_odom_alt.transform.translation.z = pathcmd.poses[pathcmd_i].pose.position.z;
-				yaw_odom = 0.0;
-			}
-			else if((ros::Time::now() - time_last_v).toSec() < 0.5){
-				float dt = fmin((ros::Time::now() - time_last).toSec(),0.1);
-				time_last = ros::Time::now();
-				odom.pose.pose.position.x  += ((odom.twist.twist.linear.x*cos(yaw_odom)-odom.twist.twist.linear.y*sin(yaw_odom)) * dt);
-				odom.pose.pose.position.y  += ((odom.twist.twist.linear.x*sin(yaw_odom)+odom.twist.twist.linear.y*cos(yaw_odom)) * dt);
-				yaw_odom                   += odom.twist.twist.angular.z * dt;
-				yaw_odom                    = constrainAngle(yaw_odom);
-			}
-			else{
-				odom.twist.twist.angular.z = odom.twist.twist.linear.x = odom.twist.twist.linear.y  = 0;
-			}
+			float dt = fmin((ros::Time::now() - time_last).toSec(),0.1);
+			time_last = ros::Time::now();
+			odom.pose.pose.position.x  += ((odom.twist.twist.linear.x*cos(yaw_odom)-odom.twist.twist.linear.y*sin(yaw_odom)) * dt);
+			odom.pose.pose.position.y  += ((odom.twist.twist.linear.x*sin(yaw_odom)+odom.twist.twist.linear.y*cos(yaw_odom)) * dt);
+			yaw_odom                   += odom.twist.twist.angular.z * dt;
+			yaw_odom                    = constrainAngle(yaw_odom);
 
 			tf_odom.transform.translation.x = odom.pose.pose.position.x;
       tf_odom.transform.translation.y = odom.pose.pose.position.y;

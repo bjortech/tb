@@ -1,5 +1,4 @@
 <launch>
-<node name="map_server" pkg="map_server" type="map_server" args="$(find tb_bringup)/maps/map.yaml" />
 
 <node pkg="move_base" type="move_base" respawn="true" name="move_base" output="screen">
     <rosparam file="$(find tb_bringup)/planners/global_costmap_params.yaml"   command="load" ns="global_costmap" />

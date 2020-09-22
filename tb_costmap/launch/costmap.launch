@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<launch>
-  <node name="tb_costmap_updater_edto_node" pkg="tb_costmap" type="tb_costmap_updater_edto_node" 	respawn="true" >
-			 <remap from="cloud" to="/velodyne_points"/>
-			 <param name="update_area_sidelength" type="double" value="30.0" />
-			 <param name="update_area_z_radius" type="double" value="1.5" />
-	</node>
-</launch>

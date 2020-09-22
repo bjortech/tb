@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<launch>
-	<include file="$(find tb_bringup)/launch/include/filters_tilt.launch.xml"/>
-	<include file="$(find tb_bringup)/launch/include/filters_hilo.launch.xml"/>
-	<include file="$(find tb_bringup)/launch/include/filters_base.launch.xml"/>
-	<include file="$(find tb_bringup)/launch/include/filters_updn.launch.xml"/>
-</launch>
