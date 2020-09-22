@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node name="tb_edto_poly_node" 		pkg="tb_edtoray" type="tb_edto_poly_node"  		respawn="true" output="screen"/>
+	<node name="tb_edto_sphere_node"  pkg="tb_edtoray" type="tb_edto_sphere_node"    respawn="true"/>
+</launch>

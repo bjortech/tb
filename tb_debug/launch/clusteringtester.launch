@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<include file="$(find tb_bringup)/launch/include/octomap_premade.launch"/>
+	<include file="$(find tb_edto)/launch/edto.launch"/>
+	<include file="$(find tb_edtoray)/launch/edtoray.launch"/>
+	<node type="tb_test_abmap_downside_node" pkg="tb_div" name="tb_test_abmap_downside_node"/>
+	<node type="tb_test_abmap_pathclustering_node" pkg="tb_div" name="tb_test_abmap_pathclustering_node" output="screen"/>
+	<node type="tb_test_abmap_requester2_node" pkg="tb_div" name="tb_test_abmap_requester2_node" output="screen" respawn="true"/>
+	<node name="tb_rmbrain" pkg="tb_div" type="tb_rmbrain.sh" />
+	<node pkg="rviz" type="rviz" name="rviz" args="-d $(find tb_div)/rviz.rviz"/>
+</launch>

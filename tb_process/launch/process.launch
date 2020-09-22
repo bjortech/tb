@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<!--node type="tb_process_client_node" pkg="tb_process" name="tb_process_client_node"/-->
+	<node type="tb_process_clusters_node" pkg="tb_process" name="tb_process_clusters_node">
+		<param name="auto_process_edto" type="bool" value="true" />
+	</node>
+	<node type="tb_process_bbpolys_node"  pkg="tb_process" name="tb_process_bbpolys_node">
+			 <param name="num_points_bbpolys" type="int" value="32" />
+			 <param name="extra_radius_bbpolys" type="double" value="5.0" />
+	</node>
+</launch>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node type="tb_baghelp_node" pkg="tb_baghelp" name="tb_baghelp_node"/>
+</launch>

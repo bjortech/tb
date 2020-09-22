@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node type="tb_abmap_downside_node" pkg="tb_abmap" name="tb_abmap_downside_node"/>
+	<node type="tb_abmap_down_node" pkg="tb_abmap" name="tb_abmap_down_node"/>
+	<node type="tb_abmap_side_node" pkg="tb_abmap" name="tb_abmap_side_node"/>
+	<!--node type="tb_abmap_cluster_node" pkg="tb_abmap" name="tb_abmap_cluster_node"/-->
+	<node type="tb_abmap_requester_node" pkg="tb_abmap" name="tb_abmap_requester_node"/>
+	<node type="tb_abmap_test_node" pkg="tb_abmap" name="tb_abmap_test_node" output="screen"/>
+
+</launch>

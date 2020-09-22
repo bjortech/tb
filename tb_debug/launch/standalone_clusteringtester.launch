@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+<node name="tb_rmbrain" pkg="tb_div" type="tb_rmbrain.sh" />
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find tb_div)/tb_standalone_pathclustering_node.rviz"/>
+<node type="tb_pathclustering_client_node" pkg="tb_div" name="tb_pathclustering_client_node" output="screen"/>
+<node name="tb_edto_side_node"    pkg="tb_edto" type="tb_edto_side_node"      respawn="true" output="screen"/>
+<include file="$(find tb_bringup)/launch/include/octomap_premade.launch"/>
+<include file="$(find tb_process)/launch/process.launch"/>
+
+
+</launch>

@@ -1,0 +1,47 @@
+DWAPlannerROS:
+  acc_lim_x: 5.0
+  acc_lim_y: 5.0
+  acc_lim_theta: 3.2
+  acc_lim_trans: 2.5
+
+  max_vel_x: 8.0
+  min_vel_x: 0.0
+
+  max_vel_y: 3.0
+  min_vel_y: -3.0
+
+# The velocity when robot is moving in a straight line
+  max_vel:  14.0
+  min_vel:  0.4
+  max_vel_trans: 14.0
+  min_vel_trans: 0.2
+  theta_stopped_vel: 0.0
+  trans_stopped_vel: 0.4
+  max_vel_theta: 2.0
+  min_vel_theta: 0.4
+
+  xy_goal_tolerance: 1.0
+  yaw_goal_tolerance: 1.0
+  latch_xy_goal_tolerance: false
+
+  sim_time: 2.9
+  vx_samples: 4
+  vy_samples: 15
+  vtheta_samples: 20
+  controller_frequency: 5.0
+
+  path_distance_bias: 0.6
+  goal_distance_bias: 0.4
+  occdist_scale: 0.3
+  forward_point_distance: 0.0
+  stop_time_buffer: 0.2
+  scaling_speed: 0.25
+  max_scaling_factor: 0.2
+  sim_granularity: 0.3
+  angular_sim_granularity: 0.2
+# Oscillation Prevention Parameters
+  oscillation_reset_dist: 0.05
+  oscillation_reset_angle: 0.2
+# Debugging
+  publish_traj_pc : true
+  publish_cost_grid_pc: true

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node type="tb_process_client_side_node" pkg="tb_process" name="tb_process_client_side_node"/>
+	<node type="tb_process_clusters_side_node" pkg="tb_process" name="tb_process_clusters_side_node"/>
+	<node type="tb_process_bbpolys_side_node"  pkg="tb_process" name="tb_process_bbpolys_side_node">
+			 <param name="num_points_bbpolys" type="int" value="32" />
+			 <param name="extra_radius_bbpolys" type="double" value="5.0" />
+	</node>
+
+	<node type="tb_process_client_down_node" pkg="tb_process" name="tb_process_client_down_node"/>
+	<node type="tb_process_clusters_down_node" pkg="tb_process" name="tb_process_clusters_down_node"/>
+	<node type="tb_process_bbpolys_down_node"  pkg="tb_process" name="tb_process_bbpolys_down_node">
+			 <param name="num_points_bbpolys" type="int" value="32" />
+			 <param name="extra_radius_bbpolys" type="double" value="5.0" />
+	</node>
+</launch>

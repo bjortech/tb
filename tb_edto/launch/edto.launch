@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node name="tb_edto_down_node"    pkg="tb_edto" type="tb_edto_down_node"      respawn="true" output="screen"/>
+	<node name="tb_edto_side_node"    pkg="tb_edto" type="tb_edto_side_node"      respawn="true" output="screen"/>
+	<node name="tb_edto_obstacledistance_node" pkg="tb_edto" type="tb_edto_obstacledistance_node" respawn="true" output="screen"/>
+</launch>
