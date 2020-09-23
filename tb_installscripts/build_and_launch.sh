@@ -4,7 +4,7 @@ cd ~/tb_ws/src
 catkin_init_workspace  # initialize your catkin workspace
 echo "source ~/tb_ws/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc
-git clone -b freak_del2 https://github.com/bjortech/tb
+git clone -b freak_del3 https://github.com/bjortech/tb
 cd ~/tb_ws
 catkin_make
 source ~/tb_ws/devel/setup.bash
