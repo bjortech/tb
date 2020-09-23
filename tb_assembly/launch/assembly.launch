@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node name="tb_assembly_node"	pkg="tb_assembly" type="tb_assembly_node"	 respawn="true" >
+		<param name="assembly_interval" type="double" value="1.2" />
+		<param name="scanbase_stabilized" type="bool" value="false" />
+	</node>
+	<node type="point_cloud2_assembler" pkg="laser_assembler" name="pointcloud2_assembler">
+			 <remap from="cloud" to="/velodyne_points"/>
+			 <param name="max_clouds" type="int" value="500" />
+			 <param name="fixed_frame" type="string" value="map" />
+	</node>
+</launch>
