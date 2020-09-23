@@ -53,7 +53,7 @@ void yawcmd_cb(const std_msgs::Float64::ConstPtr& msg){
   yaw = msg->data;
 }
 int main(int argc, char **argv) {
-    ros::init(argc, argv, "tb_simulate_djiresponse_node");
+    ros::init(argc, argv, "tb_simulate_drone_node");
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
     private_nh.param("reference_latitude", par_latitude, 60.366926);//*2.0);

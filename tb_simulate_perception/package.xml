@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>tb_simulate</name>
+  <name>tb_simulate_perception</name>
   <version>0.0.0</version>
-  <description>The tb_simulate package</description>
+  <description>The tb_simulate_perception package</description>
 
   <maintainer email="nuc1@todo.todo">nuc1</maintainer>
 

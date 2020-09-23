@@ -3,7 +3,11 @@ Panels:
     Help Height: 89
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /sensor1
+        - /MarkerArray1
+        - /MarkerArray1/Status1
+        - /sensor2
       Splitter Ratio: 0.5494186282157898
     Tree Height: 449
   - Class: rviz/Selection
@@ -24,7 +28,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: mb_traj
+    SyncSource: sensor
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -349,6 +353,74 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 29.5
+        Min Value: 0.5
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 78; 154; 6
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 100
+      Min Color: 0; 0; 0
+      Min Intensity: 1
+      Name: sensor
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /velodyne_points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: false
+      Marker Topic: /occupied_cells_vis_array
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: false
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 29.5
+        Min Value: 0.5
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 52; 101; 164
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 100
+      Min Color: 0; 0; 0
+      Min Intensity: 1
+      Name: sensor
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /octomap_point_cloud_centers
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -377,25 +449,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 54.83677673339844
+      Distance: 115.42655944824219
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.08866311609745026
-        Y: -2.455435037612915
-        Z: -5.539730548858643
+        X: 9.75757122039795
+        Y: 2.606534004211426
+        Z: -1.2967113256454468
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.625400722026825
+      Pitch: 0.5254020094871521
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 2.905850648880005
+      Yaw: 2.785851240158081
     Saved: ~
 Window Geometry:
   Displays:

@@ -35,7 +35,7 @@ void arm2_pan_cb(const std_msgs::Float64::ConstPtr& msg){
 }
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "tb_simulate_actuatorresponse_node");
+    ros::init(argc, argv, "tb_simulate_actuators_node");
     ros::NodeHandle nh;
 		ros::NodeHandle private_nh("~");
 		arm1_til_limlo = -1.5;

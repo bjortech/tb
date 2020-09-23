@@ -4,7 +4,7 @@
 	<include file="$(find tb_cmd)/launch/cmd.launch"/>
 	<include file="$(find tb_bringup)/launch/include/mb.launch.xml"/>
 	<include file="$(find tb_robot)/launch/robot.launch"/>
-	<include file="$(find tb_simulate)/launch/simulate.launch"/>
+	<include file="$(find tb_simulate_hardware)/launch/simulate_hardware.launch"/>
 
 	<node name="map_server" pkg="map_server" type="map_server" args="$(find tb_bringup)/maps/map_slottet.yaml" />
 

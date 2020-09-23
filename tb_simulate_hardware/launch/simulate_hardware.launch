@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<arg name="latitude" default="60.29499" />
+	<arg name="longitude" default="5.36145" />
+
+	<node name="tb_simulate_actuators_node"  pkg="tb_simulate_hardware" type="tb_simulate_actuators_node" 	respawn="true"/>
+	<node name="tb_simulate_drone_node"    		pkg="tb_simulate_hardware" type="tb_simulate_drone_node" 				respawn="true">
+	  <param name="reference_latitude" value="$(arg latitude)"/>
+	  <param name="reference_longitude" value="$(arg longitude)"/>
+	  <param name="reference_altitude" value="0"/>
+	</node>
+</launch>
