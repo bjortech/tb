@@ -52,9 +52,9 @@
 #include <cv_bridge/cv_bridge.h>
 #include <nav_msgs/Odometry.h>
 
-cv::Mat img_height(1000,1000,CV_8U,cv::Scalar(0)); //create image, set encoding and size, init pixels to default val
+cv::Mat img_height(1000,1000,CV_8UC3,cv::Scalar(0, 0, 0)); //create image, set encoding and size, init pixels to default val
 ///********FRONTIER*************////////
-double par_res,par_maprad,par_imwrite_interval;
+double par_res,par_imwrite_interval;
 ros::Publisher pub_heightcloud_registered,pub_heightcloud_ordered;
 sensor_msgs::PointCloud heightcloud;
 geometry_msgs::Point pos;
@@ -63,7 +63,7 @@ int count_image_name= 0;
 tf2_ros::Buffer tfBuffer;
 int radlen_used = 50;
 ros::Time process_start;
-
+int par_maprad,par_maprad_pos;
 std::string active_process;
 
 void start_process(std::string name){
@@ -221,10 +221,12 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
   ros::NodeHandle private_nh("~");
 	private_nh.param("resolution", par_res, 1.0);
-	private_nh.param("area_radius", par_maprad, 1.0);
+	private_nh.param("area_heightrequest_radius", par_maprad, 25);
+	private_nh.param("area_autopos_radius", par_maprad_pos, 5);
 	private_nh.param("write_heightimage_interval", par_imwrite_interval, 2.0);
 	tf2_ros::TransformListener tf2_listener(tfBuffer);
 	heightcloud.points.resize(1000*1000+2);
+	radlen_used = par_maprad;
 	ros::Subscriber s1   								= nh.subscribe("/assembled_cloud2",10,pc2_cb);
 	ros::Subscriber s2   								= nh.subscribe("/tb_heightmapper/get_points_ordered_aroundpnt",10,get_points_ordered_aroundpnt_cb);
 	ros::Subscriber s3   								= nh.subscribe("/tb_heightmapper/get_points_registered_aroundpnt",10,get_points_registered_aroundpnt_cb);
@@ -238,10 +240,11 @@ int main(int argc, char** argv)
   while(ros::ok()){
 		update_pos();
 		if((ros::Time::now() - last_imrwite).toSec() > par_imwrite_interval){
+			last_imrwite = ros::Time::now();
 			naming_count++;
-				cv::imwrite("/home/nuc/brain/"+std::to_string(naming_count)+"heightimage.png",img_height);
+			cv::imwrite("/home/nuc/brain/"+std::to_string(naming_count)+"heightimage.png",img_height);
 		}
-		pub_heightcloud_area.publish(get_points_ordered_aroundpnt("",pos,5));
+		pub_heightcloud_area.publish(get_points_ordered_aroundpnt("",pos,par_maprad_pos));
 		rate.sleep();
 		ros::spinOnce();
 	}
