@@ -53,6 +53,7 @@
 #include <nav_msgs/Odometry.h>
 
 cv::Mat img_height(1000,1000,CV_8UC3,cv::Scalar(0, 0, 0)); //create image, set encoding and size, init pixels to default val
+cv::Mat img_draw(1000,1000,CV_8UC3,cv::Scalar(0, 0, 0)); //create image, set encoding and size, init pixels to default val
 ///********FRONTIER*************////////
 double par_res,par_imwrite_interval;
 ros::Publisher pub_heightcloud_registered,pub_heightcloud_ordered;
@@ -101,7 +102,7 @@ sensor_msgs::PointCloud get_points_ordered_aroundpnt(std::string type,geometry_m
 	start_process("get_points_ordered_aroundpnt");
 	sensor_msgs::PointCloud heightcloud;
 	heightcloud.header = hdr();
-	int sidelength_xy = (radlen_xy * 2);
+	int sidelength_xy = (radlen_xy * 2)+2;
 	ROS_INFO("Sidelength: %i = %i ",radlen_xy,sidelength_xy);
 	heightcloud.points.resize(sidelength_xy*sidelength_xy + 2);
 	int i = 0;
@@ -242,7 +243,13 @@ int main(int argc, char** argv)
 		if((ros::Time::now() - last_imrwite).toSec() > par_imwrite_interval){
 			last_imrwite = ros::Time::now();
 			naming_count++;
-			cv::imwrite("/home/nuc/brain/"+std::to_string(naming_count)+"heightimage.png",img_height);
+			for(int r = 0; r < img_height.rows; r++){
+				for(int c = 0; c < img_height.cols; c++){
+					img_draw.at<cv::Vec3b>(r,c)[0] = 10*img_height.at<cv::Vec3b>(r,c)[0];
+					img_draw.at<cv::Vec3b>(r,c)[2] = 10*img_height.at<cv::Vec3b>(r,c)[2];
+				}
+			}
+			cv::imwrite("/home/nuc/brain/"+std::to_string(naming_count)+"heightimage.png",img_draw);
 		}
 		pub_heightcloud_area.publish(get_points_ordered_aroundpnt("",pos,par_maprad_pos));
 		rate.sleep();

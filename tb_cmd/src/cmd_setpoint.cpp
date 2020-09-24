@@ -32,6 +32,7 @@ double yaw_odom;
 tf2_ros::Buffer tfBuffer;
 nav_msgs::Path pathcmd;
 int pathcmd_i = 0;
+double par_zclearing,zmin;
 double constrainAngle(double x){
   if(x > M_PI)
     return (x - M_PI*2);
@@ -72,10 +73,16 @@ void set_xyz_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
 	odom.pose.pose.position.x = msg->point.x;
 	odom.pose.pose.position.y = msg->point.y;
 }
+
+
+void set_zmin_cb(const std_msgs::Float64::ConstPtr& msg){
+	zmin = msg->data + par_zclearing;
+}
 int main(int argc, char **argv){
     ros::init(argc, argv, "tb_cmd_setpoint_node");
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
+		private_nh.param("z_min_clearing", par_zclearing, 4.0);//*2.0);
     ros::Rate rate(20);
 
     tf2_ros::TransformBroadcaster tf_b;
@@ -103,15 +110,16 @@ int main(int argc, char **argv){
     odom.twist.covariance[14] = 1e-3;
     odom.twist.covariance[21] = 1e-3;
     odom.twist.covariance[35] = 1e-3;
-
+		
     ros::Subscriber s4 			= nh.subscribe("/cmd_vel",             100,&twist_cb);
 		ros::Subscriber s1 			= nh.subscribe("/tb_cmd/set_yaw",100,&set_yaw_cb);
 		ros::Subscriber s5 			= nh.subscribe("/tb_cmd/set_xyz", 100,&set_xyz_cb);
 		ros::Subscriber s2 			= nh.subscribe("/tb_cmd/set_xy", 100,&set_xy_cb);
 		ros::Subscriber s3 			= nh.subscribe("/tb_cmd/set_z",  100,&set_z_cb);
+		ros::Subscriber s7 			= nh.subscribe("/tb_autoevade/z_min",  100,&set_zmin_cb);
+
     ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 100);
     ros::Time time_last = ros::Time::now();
-
     tf_odom_alt.transform.translation.z = 10;
 
     while(ros::ok()){
@@ -127,7 +135,14 @@ int main(int argc, char **argv){
       tf_odom.transform.rotation      = odom.pose.pose.orientation = tf::createQuaternionMsgFromYaw(yaw_odom);
 
       odom.header.stamp = tf_odom.header.stamp = tf_odom_alt.header.stamp = ros::Time::now();
-      tf_b.sendTransform(tf_odom_alt);
+			if(tf_odom_alt.transform.translation.z < zmin){
+				geometry_msgs::TransformStamped tf_zmin;
+				tf_zmin = tf_odom_alt;
+				tf_zmin.transform.translation.z = zmin;
+				tf_b.sendTransform(tf_zmin);
+			}
+			else
+				tf_b.sendTransform(tf_odom_alt);
       tf_b.sendTransform(tf_odom);
       odom_pub.publish(odom);
 

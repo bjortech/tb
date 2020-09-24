@@ -182,10 +182,10 @@ std::vector<float> get_bbvec_aroundnt(geometry_msgs::Point midpoint){
 	bbvec.resize(6);
 	bbvec[0] = midpoint.x - par_maprad;
 	bbvec[1] = midpoint.y - par_maprad;
-	bbvec[2] = midpoint.z - par_dz/2.0;
+	bbvec[2] = round(midpoint.z) - par_dz;
 	bbvec[3] = midpoint.x + par_maprad;
 	bbvec[4] = midpoint.y + par_maprad;
-	bbvec[5] = midpoint.z + par_dz/2.0;
+	bbvec[5] = round(midpoint.z) + par_dz;
 	if(round(bbvec[5]) - round(bbvec[2]) < 2.0){
 		bbvec[2] = bbvec[2]-1.0;
 	}

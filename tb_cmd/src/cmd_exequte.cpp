@@ -25,8 +25,8 @@
 #include <eigen3/Eigen/Core>
 
 tf2_ros::Buffer tfBuffer;
-double par_vel_xy_max = 10.0;
-
+double par_vel_xy_max,par_zclearing;
+double zmin;
 geometry_msgs::Point get_point_in_map(std::string frame){
   geometry_msgs::TransformStamped transformStamped;
   try{
@@ -43,18 +43,22 @@ geometry_msgs::Point get_point_in_map(std::string frame){
   pnt_out.z = transformStamped.transform.translation.z;
 	return pnt_out;
 }
-
+void set_zmin_cb(const std_msgs::Float64::ConstPtr& msg){
+	zmin = msg->data + par_zclearing;
+}
 int main(int argc, char **argv){
   ros::init(argc, argv, "tb_cmd_exequte_node");
   ros::NodeHandle nh;
   ros::NodeHandle private_nh("~");
 	private_nh.param("max_horisontal_velocity", par_vel_xy_max, 8.0);//*2.0);
+	private_nh.param("z_min_clearing", par_zclearing, 2.0);//*2.0);
 
   ros::Rate rate(50);
 
   tf2_ros::TransformListener tf2_listener(tfBuffer);
 
   ros::Publisher cmd_pub  = nh.advertise<sensor_msgs::Joy>("/tb_exeq/cmd_joy", 100);
+	ros::Subscriber s3 			= nh.subscribe("/tb_autoevade/z_min",  100,&set_zmin_cb);
 
   while(ros::ok()){
 		geometry_msgs::Point position_setpoint = get_point_in_map("base_perfect_alt");
@@ -70,7 +74,7 @@ int main(int argc, char **argv){
 	  cmd.axes.resize(4);
 		cmd.axes[0] = stride_vec.x();
 		cmd.axes[1] = stride_vec.y();
-		cmd.axes[2] = position_setpoint.z;
+		cmd.axes[2] = fmax(position_setpoint.z,zmin);
 		cmd.axes[3] = atan2(stride_vec.y(),stride_vec.x());
 	  cmd.header.stamp = ros::Time::now();
 	  cmd_pub.publish(cmd);
