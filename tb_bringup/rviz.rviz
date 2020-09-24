@@ -8,7 +8,6 @@ Panels:
         - /MarkerArray1
         - /sensor2
         - /PointCloud1
-        - /PointCloud1/Status1
       Splitter Ratio: 0.5494186282157898
     Tree Height: 449
   - Class: rviz/Selection
@@ -425,6 +424,66 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
+        Max Value: 13
+        Min Value: 0
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud
+      Color: 138; 226; 52
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.10000000149011612
+      Style: Points
+      Topic: /tb_heightmapper/heightcloud_around_pos_ordered
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.10000000149011612
+      Style: Points
+      Topic: /tb_heightmapper/heightcloud_ordered
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
         Max Value: 10
         Min Value: -10
         Value: true
@@ -444,10 +503,10 @@ Visualization Manager:
       Position Transformer: ""
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 3
+      Size (Pixels): 1
       Size (m): 0.10000000149011612
-      Style: Flat Squares
-      Topic: /tb_heightmapper/heightcloud
+      Style: Points
+      Topic: /tb_heightmapper/heightcloud_registered
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -480,25 +539,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 75.31056213378906
+      Distance: 165.14019775390625
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 9.75757122039795
-        Y: 2.606534004211426
-        Z: -1.2967113256454468
+        X: 3.2435362339019775
+        Y: -4.655025959014893
+        Z: -4.011188983917236
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6304019689559937
+      Pitch: 0.47540271282196045
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 2.5858521461486816
+      Yaw: 2.6358554363250732
     Saved: ~
 Window Geometry:
   Displays:
