@@ -54,13 +54,26 @@
 
 cv::Mat img_height(1000,1000,CV_8U,cv::Scalar(0)); //create image, set encoding and size, init pixels to default val
 ///********FRONTIER*************////////
-double par_res,par_maprad;
-ros::Publisher pub_heightcloud;
+double par_res,par_maprad,par_imwrite_interval;
+ros::Publisher pub_heightcloud_registered,pub_heightcloud_ordered;
 sensor_msgs::PointCloud heightcloud;
 geometry_msgs::Point pos;
 bool everyother;
 int count_image_name= 0;
 tf2_ros::Buffer tfBuffer;
+int radlen_used = 50;
+ros::Time process_start;
+
+std::string active_process;
+
+void start_process(std::string name){
+  float dt = (ros::Time::now() - process_start).toSec();
+  if(active_process != "")
+    ROS_INFO("PATHCREATOR: Process: %s took %.4f sec",active_process.c_str(),dt);
+  active_process = name;
+  process_start  = ros::Time::now();
+}
+
 std_msgs::Header hdr(){
   std_msgs::Header header;
   header.frame_id = "map";
@@ -84,43 +97,74 @@ int r2y(float r){
 int c2x(float c){
   return int((c - img_height.cols / 2) * par_res);
 }
-void publish_ordered_pointcloud(){
-	//TODO: This function can be integrated directly in the below callback. Only thing to check before doing so is that the going from x,y to i is done in right order. Probably doesn't take that long anyway
-	ros::Time t0 = ros::Time::now();
+sensor_msgs::PointCloud get_points_ordered_aroundpnt(std::string type,geometry_msgs::Point midpoint,int radlen_xy){
+	start_process("get_points_ordered_aroundpnt");
+	sensor_msgs::PointCloud heightcloud;
+	heightcloud.header = hdr();
+	int sidelength_xy = (radlen_xy * 2);
+	ROS_INFO("Sidelength: %i = %i ",radlen_xy,sidelength_xy);
+	heightcloud.points.resize(sidelength_xy*sidelength_xy + 2);
 	int i = 0;
-	for(int y = -img_height.rows/2; y < img_height.rows/2-1; y++){
-  	for(int x = -img_height.rows/2; x < img_height.rows/2-1; x++){
+	for(int y = midpoint.y - radlen_xy; y < midpoint.y + radlen_xy; y++){
+		for(int x = midpoint.x - radlen_xy; x < midpoint.x + radlen_xy; x++){
+			int r = y2r(y);
+			int c = x2c(x);
 			i++;
 			heightcloud.points[i].x = x;
 			heightcloud.points[i].y = y;
-			heightcloud.points[i].z = img_height.at<uchar>(y2r(y),x2c(x));
-    }
-  }
-	float dt = (ros::Time::now()-t0).toSec();
-	ROS_INFO("create_and_publish_ordered_pointcloud took %.4f sec",dt);
-	heightcloud.header = hdr();
-	pub_heightcloud.publish(heightcloud);
+			ROS_INFO("I: %i / %i",i,heightcloud.points.size());
+			if(r > 0 && c > 0 && r < img_height.rows && c < img_height.cols){
+				//int c = x2c(x);	int r = y2r(y);		if(r > 0 && c > 0 && r < img_height.rows && c < img_height.cols)
+				if(type == "min")
+					heightcloud.points[i].z = img_height.at<cv::Vec3b>(y2r(y),x2c(x))[0];
+	    	else if(type == "minmax" && img_height.at<cv::Vec3b>(r,c)[0] < img_height.at<cv::Vec3b>(r,c)[2])
+					heightcloud.points[i].z = img_height.at<cv::Vec3b>(y2r(y),x2c(x))[2];
+				else
+					heightcloud.points[i].z = img_height.at<cv::Vec3b>(y2r(y),x2c(x))[2];
+	  	}
+		}
+	}
+	start_process("");
+	ROS_INFO("MaxPoints[type: %s]: %i pnts around %.0f %.0f radius_side: %i",type.c_str(),heightcloud.points.size(),midpoint.x,midpoint.y,radlen_xy);
+	return heightcloud;
 }
-sensor_msgs::PointCloud get_heights_aroundpoint(geometry_msgs::Point midpoint,int radlen_xy){
-	sensor_msgs::PointCloud pc1_out;
+sensor_msgs::PointCloud get_points_registered_aroundpoint(std::string type,geometry_msgs::Point midpoint,int radlen_xy){
+	start_process("get_points_registered_aroundpoint");
+	sensor_msgs::PointCloud heightcloud;
 	geometry_msgs::Point32 p;
-	int i = 0;
 	for(int y = midpoint.y - radlen_xy; y < midpoint.y + radlen_xy; y++){
-  	for(int x = midpoint.y - radlen_xy; x < midpoint.y + radlen_xy; x++){
-			if(img_height.at<uchar>(y2r(y),x2c(x)) > 0){
-				p.x = x;
-				p.y = y;
-				p.z = img_height.at<uchar>(y2r(y),x2c(x));
-				pc1_out.points.push_back(p);
-			}
-    }
+  	for(int x = midpoint.x - radlen_xy; x < midpoint.x + radlen_xy; x++){
+			int r = y2r(y);
+			int c = x2c(x);
+			if(r > 0 && c > 0 && r < img_height.rows && c < img_height.cols){
+				if(img_height.at<cv::Vec3b>(r,c)[2] > 0){
+					p.x = x;
+					p.y = y;
+					if(type == "min"){
+						p.z = img_height.at<cv::Vec3b>(r,c)[0];
+						heightcloud.points.push_back(p);
+					}
+					else if(type == "minmax" && img_height.at<cv::Vec3b>(r,c)[0] < img_height.at<cv::Vec3b>(r,c)[2]){
+						p.z = img_height.at<cv::Vec3b>(r,c)[0];
+						heightcloud.points.push_back(p);
+						p.z = img_height.at<cv::Vec3b>(r,c)[2];
+						heightcloud.points.push_back(p);
+					}
+					else{
+						p.z = img_height.at<cv::Vec3b>(r,c)[2];
+						heightcloud.points.push_back(p);
+					}
+				}
+	    }
+		}
   }
-	pc1_out.header = hdr();
-	return pc1_out;
+	start_process("");
+	ROS_INFO("MaxPoints[type: %s]: %i pnts around %.0f %.0f radius_side: %i",type.c_str(),heightcloud.points.size(),midpoint.x,midpoint.y,radlen_xy);
+	heightcloud.header = hdr();
+	return heightcloud;
 }
 
-void pc2_cb(const sensor_msgs::PointCloud2::ConstPtr& msg)
-{
+void pc2_cb(const sensor_msgs::PointCloud2::ConstPtr& msg){
 	if(msg->data.size() > 10 && msg->header.frame_id == "map"){
 		sensor_msgs::PointCloud2ConstIterator<float> iter_x(*msg, "x");
 		sensor_msgs::PointCloud2ConstIterator<float> iter_y(*msg, "y");
@@ -132,25 +176,30 @@ void pc2_cb(const sensor_msgs::PointCloud2::ConstPtr& msg)
 	      int r = y2r(*iter_y);
 	      int c = x2c(*iter_x);
 	      int z = fmax(*iter_z,1);
-				if(z > img_height.at<uchar>(r,c)){
-					//if(img_height.at<uchar>(r,c) == 0){
+				int z_min = img_height.at<cv::Vec3b>(r,c)[0];
+				int z_num = img_height.at<cv::Vec3b>(r,c)[1];
+				int z_max = img_height.at<cv::Vec3b>(r,c)[2];
 
-			//		}
-					img_height.at<uchar>(r,c) = z;
-					//updated_points.push_b
-				}
+				if(z_min == 0 || z < z_min)
+					img_height.at<cv::Vec3b>(r,c)[0] = z;
+
+				if(z > z_max)
+					img_height.at<cv::Vec3b>(r,c)[2] = z;
+
+				img_height.at<cv::Vec3b>(r,c)[1] = z_num + 1;
 	    }
 		}
 	}
-	if(everyother){
-		everyother = false;
-		count_image_name++;
-		cv::imwrite("/home/nuc/brain/"+std::to_string(count_image_name)+"heightimage.png",img_height);
-	}
-	else{
-		everyother = true;
-		publish_ordered_pointcloud();
-	}
+}
+void get_points_ordered_aroundpnt_cb(const geometry_msgs::PointStamped::ConstPtr& msg){
+		pub_heightcloud_ordered.publish(get_points_ordered_aroundpnt(msg->header.frame_id,msg->point,radlen_used));
+}
+void get_points_registered_aroundpnt_cb(const geometry_msgs::PointStamped::ConstPtr& msg){
+		pub_heightcloud_registered.publish(get_points_registered_aroundpoint(msg->header.frame_id,msg->point,radlen_used));
+}
+void set_sidelength_cb(const std_msgs::UInt8::ConstPtr& msg){
+	ROS_INFO("New radlen: %i -> %i",radlen_used,msg->data);
+	radlen_used = msg->data;
 }
 void update_pos(){
 	geometry_msgs::TransformStamped transformStamped;
@@ -173,16 +222,26 @@ int main(int argc, char** argv)
   ros::NodeHandle private_nh("~");
 	private_nh.param("resolution", par_res, 1.0);
 	private_nh.param("area_radius", par_maprad, 1.0);
+	private_nh.param("write_heightimage_interval", par_imwrite_interval, 2.0);
 	tf2_ros::TransformListener tf2_listener(tfBuffer);
 	heightcloud.points.resize(1000*1000+2);
 	ros::Subscriber s1   								= nh.subscribe("/assembled_cloud2",10,pc2_cb);
-	pub_heightcloud	 										= nh.advertise<sensor_msgs::PointCloud>("/tb_heightmapper/heightcloud",10);
-	ros::Publisher pub_heightcloud_area = nh.advertise<sensor_msgs::PointCloud>("/tb_heightmapper/heightcloud_around_pos",10);
+	ros::Subscriber s2   								= nh.subscribe("/tb_heightmapper/get_points_ordered_aroundpnt",10,get_points_ordered_aroundpnt_cb);
+	ros::Subscriber s3   								= nh.subscribe("/tb_heightmapper/get_points_registered_aroundpnt",10,get_points_registered_aroundpnt_cb);
+	ros::Subscriber s4   								= nh.subscribe("/tb_heightmapper/set_sidelength",10,set_sidelength_cb);
+	pub_heightcloud_ordered							= nh.advertise<sensor_msgs::PointCloud>("/tb_heightmapper/heightcloud_ordered",10);
+	pub_heightcloud_registered					= nh.advertise<sensor_msgs::PointCloud>("/tb_heightmapper/heightcloud_registered",10);
+	ros::Publisher pub_heightcloud_area = nh.advertise<sensor_msgs::PointCloud>("/tb_heightmapper/heightcloud_around_pos_ordered",10);
 	ros::Rate rate(5.0);
+	int naming_count = 0;
+	ros::Time last_imrwite = ros::Time::now();
   while(ros::ok()){
 		update_pos();
-		sensor_msgs::PointCloud heightcloud_area = get_heights_aroundpoint(pos,100);
-		pub_heightcloud_area.publish(heightcloud_area);
+		if((ros::Time::now() - last_imrwite).toSec() > par_imwrite_interval){
+			naming_count++;
+				cv::imwrite("/home/nuc/brain/"+std::to_string(naming_count)+"heightimage.png",img_height);
+		}
+		pub_heightcloud_area.publish(get_points_ordered_aroundpnt("",pos,5));
 		rate.sleep();
 		ros::spinOnce();
 	}
