@@ -2,8 +2,8 @@
 <launch>
 	<node name="tb_heightmapper_node" pkg="tb_heightmapper" type="tb_heightmapper_node" respawn="true">
 		<!--param name="resolution" type="double" value="1.0" /-->
-		<param name="area_heightrequest_radius" type="int" value="50.0" />
-		<param name="area_autopos_radius" type="int" value="5.0" />
+		<param name="area_heightrequest_radius" type="int" value="50" />
+		<param name="area_autopos_radius" type="int" value="5" />
 		<param name="write_heightimage_interval" type="double" value="2.0" />
 		<!--(CHANGING RESOLUTION WILL PROBABLY CAUSE UNWANTED PROBLEMS. ALLWAYS USED 1.0 FOR SIMPLICITY)-->
 	</node>
