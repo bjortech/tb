@@ -7,7 +7,6 @@ Panels:
         - /sensor1
         - /MarkerArray1
         - /sensor2
-        - /PointCloud1
       Splitter Ratio: 0.5494186282157898
     Tree Height: 449
   - Class: rviz/Selection
@@ -490,8 +489,8 @@ Visualization Manager:
       Axis: Z
       Channel Name: intensity
       Class: rviz/PointCloud
-      Color: 255; 255; 255
-      Color Transformer: ""
+      Color: 186; 189; 182
+      Color Transformer: FlatColor
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
@@ -500,10 +499,10 @@ Visualization Manager:
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: PointCloud
-      Position Transformer: ""
+      Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 1
+      Size (Pixels): 2
       Size (m): 0.10000000149011612
       Style: Points
       Topic: /tb_heightmapper/heightcloud_registered
@@ -539,25 +538,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 165.14019775390625
+      Distance: 87.47014617919922
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 3.2435362339019775
-        Y: -4.655025959014893
-        Z: -4.011188983917236
+        X: 8.552629470825195
+        Y: 6.49143123626709
+        Z: -3.572930335998535
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.47540271282196045
+      Pitch: 0.6654027104377747
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 2.6358554363250732
+      Yaw: 2.195852279663086
     Saved: ~
 Window Geometry:
   Displays:
