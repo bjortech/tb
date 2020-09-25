@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-	<node name="tb_assembly_node"	pkg="tb_assembly" type="tb_assembly_node"	 respawn="true" >
+	<node name="tb_assembly_node"	pkg="tb_assembly" type="tb_assembly_node"	 respawn="true" output="screen">
 		<param name="assembly_interval" type="double" value="1.2" />
 		<param name="scanbase_stabilized" type="bool" value="false" />
 	</node>

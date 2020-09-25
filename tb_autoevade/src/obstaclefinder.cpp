@@ -61,7 +61,7 @@ shared_ptr<DynamicEDTOctomap> edf_ptr;
 AbstractOcTree* abs_octree;
 shared_ptr<OcTree> octree;
 bool got_map = false;
-geometry_msgs::Point pos,cmd_pos;
+geometry_msgs::Point pos,cmd_pos,pos_future;
 int oct_xmin,oct_ymin,oct_zmin,oct_xmax,oct_ymax,oct_zmax,oct_range_x,oct_range_y,oct_range_z;
 double par_dz,par_collision_radius;
 
@@ -102,16 +102,26 @@ bool outside_octomap(std::vector<float> bbvec){
 	else
 		return false;
 }
-std::vector<float> get_bbvec_from_midpoint(geometry_msgs::Point midpoint,float rad){
+std::vector<float> get_bbvec_from_midpoint(geometry_msgs::Point midpoint,float rad, bool seek_down){
 	std::vector<float> bbvec;
 	bbvec.resize(6);
 //int zlvl = floor(midpoint.z / par_dz);
-	bbvec[0] = midpoint.x - rad;
-	bbvec[1] = midpoint.y - rad;
-	bbvec[2] = midpoint.z - par_dz;
-	bbvec[3] = midpoint.x + rad;
-	bbvec[4] = midpoint.y + rad;
-	bbvec[5] = midpoint.z +par_dz;
+	if(!seek_down){
+		bbvec[0] = midpoint.x - rad;
+		bbvec[1] = midpoint.y - rad;
+		bbvec[2] = midpoint.z - par_dz;
+		bbvec[3] = midpoint.x + rad;
+		bbvec[4] = midpoint.y + rad;
+		bbvec[5] = midpoint.z +	par_dz;
+	}
+	else{
+		bbvec[0] = midpoint.x - rad/2;
+		bbvec[1] = midpoint.y - rad/2;
+		bbvec[2] = midpoint.z - rad;
+		bbvec[3] = midpoint.x + rad/2;
+		bbvec[4] = midpoint.y + rad/2;
+		bbvec[5] = midpoint.z +	par_dz;
+	}
 	return bbvec;
 }
 geometry_msgs::PointStamped find_closest_obstacle(geometry_msgs::Point pnt){
@@ -130,45 +140,32 @@ geometry_msgs::PointStamped find_closest_obstacle(geometry_msgs::Point pnt){
 	}
 	return pobs;
 }
-geometry_msgs::PointStamped update_edto_and_get_closest_obstacle(geometry_msgs::Point pnt){
+geometry_msgs::PointStamped update_edto_and_get_closest_obstacle(geometry_msgs::Point pnt,bool seek_down){
 	geometry_msgs::PointStamped pobs;
 	pobs.header.frame_id = "no_data";
-	std::vector<float> bbvec = get_bbvec_from_midpoint(pnt,par_collision_radius);
+	std::vector<float> bbvec = get_bbvec_from_midpoint(pnt,par_collision_radius,seek_down);
 	if(!outside_octomap(bbvec) && update_edto_bbvec(bbvec,par_collision_radius))
 		return find_closest_obstacle(pnt);
 	else
 		return pobs;
 }
-void update_pos(){
+
+void update_midpoint(){
 	geometry_msgs::TransformStamped transformStamped;
 
 	try{
-			transformStamped = tfBuffer.lookupTransform("map","base_stabilized",
+			transformStamped = tfBuffer.lookupTransform("map","base_future",
 															 ros::Time(0));
 	}
 	catch (tf2::TransformException &ex) {
 		ROS_WARN("%s",ex.what());
 		ros::Duration(1.0).sleep();
 	}
-	pos.x = transformStamped.transform.translation.x;
-	pos.y = transformStamped.transform.translation.y;
-	pos.z = transformStamped.transform.translation.z;
+	 pos_future.x = transformStamped.transform.translation.x;
+	 pos_future.y = transformStamped.transform.translation.y;
+	 pos_future.z = transformStamped.transform.translation.z;
 }
-void update_cmd(){
-	geometry_msgs::TransformStamped transformStamped;
 
-	try{
-			transformStamped = tfBuffer.lookupTransform("map","base_perfect_alt",
-															 ros::Time(0));
-	}
-	catch (tf2::TransformException &ex) {
-		ROS_WARN("%s",ex.what());
-		ros::Duration(1.0).sleep();
-	}
-	 cmd_pos.x = transformStamped.transform.translation.x;
-	 cmd_pos.y = transformStamped.transform.translation.y;
-	 cmd_pos.z = transformStamped.transform.translation.z;
-}
 void octomap_callback(const octomap_msgs::Octomap& msg){
   abs_octree=octomap_msgs::fullMsgToMap(msg);
   octree.reset(dynamic_cast<octomap::OcTree*>(abs_octree));
@@ -185,15 +182,35 @@ int main(int argc, char** argv)
 	tf2_ros::TransformListener tf2_listener(tfBuffer);
 
 	ros::Subscriber s1  = nh.subscribe("/octomap_full",1,octomap_callback);
-	ros::Publisher pub_obstacle  = nh.advertise<geometry_msgs::PointStamped>("/tb_autoevade/closest_obstacle",10);
+	ros::Publisher pub_obstacle_xy  = nh.advertise<geometry_msgs::PointStamped>("/tb_autoevade/obstacle_xy",10);
+	ros::Publisher pub_obstacle_z   = nh.advertise<geometry_msgs::PointStamped>("/tb_autoevade/obstacle_z",10);
 
-	ros::Rate rate(1.0);
+	ros::Rate rate(2.0);
+	bool everyother;
 	while(ros::ok()){
-		update_pos();
-		update_cmd();
-
+		update_midpoint();
 		if(got_map){
-			geometry_msgs::Point pos_forw;
+			ros::Time t0 = ros::Time::now();
+			if(everyother){
+				everyother = false;
+				geometry_msgs::PointStamped obs_xy = update_edto_and_get_closest_obstacle(pos_future,false);
+				if(obs_xy.header.frame_id == "map"){
+					pub_obstacle_xy.publish(obs_xy);
+				}
+				ROS_INFO("finding obstacle xy: %.4f sec",(ros::Time::now()-t0).toSec());
+			}
+			else{
+				everyother = true;
+				geometry_msgs::PointStamped obs_z = update_edto_and_get_closest_obstacle(pos_future,true);
+				if(obs_z.header.frame_id == "map"){
+					pub_obstacle_z.publish(obs_z);
+				}
+				ROS_INFO("finding obstacle z: %.4f sec",(ros::Time::now()-t0).toSec());
+			}
+		}
+		rate.sleep();
+		ros::spinOnce();
+	/*		geometry_msgs::Point pos_forw;
 			pos_forw.x = (cmd_pos.x + pos.x)/2;
 			pos_forw.y = (cmd_pos.y + pos.y)/2;
 			pos_forw.z = (cmd_pos.z + pos.z)/2;
@@ -208,10 +225,8 @@ int main(int argc, char** argv)
 			}
 			if(obs_mid.header.frame_id == "map"){
 				pub_obstacle.publish(obs_mid);
-			}
-		}
-		rate.sleep();
-		ros::spinOnce();
+			}*/
+
 	}
 	return 0;
 }

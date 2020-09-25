@@ -113,7 +113,7 @@ sensor_msgs::PointCloud get_points_ordered_aroundpnt(std::string type,geometry_m
 			i++;
 			heightcloud.points[i].x = x;
 			heightcloud.points[i].y = y;
-			ROS_INFO("I: %i / %i",i,heightcloud.points.size());
+			//ROS_INFO("I: %i / %i",i,heightcloud.points.size());
 			if(r > 0 && c > 0 && r < img_height.rows && c < img_height.cols){
 				//int c = x2c(x);	int r = y2r(y);		if(r > 0 && c > 0 && r < img_height.rows && c < img_height.cols)
 				if(type == "min")
@@ -205,7 +205,7 @@ void set_sidelength_cb(const std_msgs::UInt8::ConstPtr& msg){
 void update_pos(){
 	geometry_msgs::TransformStamped transformStamped;
 	try{
-		transformStamped = tfBuffer.lookupTransform("map","base_perfect_alt",
+		transformStamped = tfBuffer.lookupTransform("map","base_future",
 														 ros::Time(0));
 	}
 	catch (tf2::TransformException &ex) {
@@ -223,7 +223,7 @@ int main(int argc, char** argv)
   ros::NodeHandle private_nh("~");
 	private_nh.param("resolution", par_res, 1.0);
 	private_nh.param("area_heightrequest_radius", par_maprad, 25);
-	private_nh.param("area_autopos_radius", par_maprad_pos, 5);
+	private_nh.param("area_autopos_radius", par_maprad_pos, 15);
 	private_nh.param("write_heightimage_interval", par_imwrite_interval, 2.0);
 	tf2_ros::TransformListener tf2_listener(tfBuffer);
 	heightcloud.points.resize(1000*1000+2);
