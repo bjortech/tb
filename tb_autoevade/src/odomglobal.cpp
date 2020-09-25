@@ -25,6 +25,7 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <eigen3/Eigen/Core>
 
+double par_dt_forward,par_dt_backward;
 double get_shortest(double target_yaw,double actual_yaw){
   double a = target_yaw - actual_yaw;
   if(a > M_PI)a -= M_PI*2;
@@ -64,22 +65,28 @@ int main(int argc, char **argv){
   ros::init(argc, argv, "tb_robot_odomglobal_node");
   ros::NodeHandle nh;
   ros::NodeHandle private_nh("~");
-
-  ros::Rate rate(50);
+	double par_dt_forward,par_dt_backward;
+	private_nh.param("dt_forward_horizon", par_dt_forward, 1.5);
+	private_nh.param("dt_backward_horizon", par_dt_backward, 1.5);
 	tf2_ros::Buffer tfBuffer;
-  tf2_ros::TransformBroadcaster tf_b;
+	tf2_ros::TransformListener tf2_listener(tfBuffer);
+	tf2_ros::TransformBroadcaster tf_b;
+
+	double node_rate = 50;
 	geometry_msgs::TransformStamped tf_future;
 	nav_msgs::Odometry odom_global;
 	geometry_msgs::Vector3 rpy;
 
-  tf_future.header.frame_id        = "base_stabilized";
-  tf_future.child_frame_id         = "base_future";
-  tf_future.transform.rotation.w   = 1;
+	tf_future.header.frame_id        = "map";
+	tf_future.child_frame_id         = "base_future";
+	tf_future.transform.rotation.w   = 1;
 
-  odom_global.header.frame_id         = "odom";
-  odom_global.child_frame_id          = "global";
-  odom_global.pose.pose.orientation.w = 1;
-	ros::Publisher pub_global_odom    = nh.advertise<nav_msgs::Odometry>("/odom_global", 100);
+	odom_global.header.frame_id         = "map";
+	odom_global.child_frame_id          = "base_stabilized";
+	odom_global.pose.pose.orientation.w = 1;
+
+	ros::Publisher pub_global_odom    = nh.advertise<nav_msgs::Odometry>("/tb_autoevade/odom_global", 100);
+	ros::Rate rate(node_rate);
 
 	double dt;
   float lastyaw;
@@ -89,16 +96,15 @@ int main(int argc, char **argv){
   std::queue<float> vz_que;
   std::queue<float> vyaw_que;
 
-  int que_size = 100;
+  int que_size = par_dt_backward * node_rate;
   float vx_sum = 0;
   float vy_sum = 0;
   float vz_sum = 0;
   float vyaw_sum = 0;
   while(ros::ok()){
-    rate.sleep();
-    ros::spinOnce();
-
 	  geometry_msgs::TransformStamped tf;
+		rate.sleep();
+		ros::spinOnce();
 	  try{
 	    tf = tfBuffer.lookupTransform("map","base_stabilized",
 	                             ros::Time(0));
@@ -116,6 +122,7 @@ int main(int argc, char **argv){
     float vx   = (tf.transform.translation.x - odom_global.pose.pose.position.x)/dt;
 		tf2::Matrix3x3 q(tf2::Quaternion(tf.transform.rotation.x, tf.transform.rotation.y, tf.transform.rotation.z, tf.transform.rotation.w));
 		q.getRPY(rpy.x,rpy.y,rpy.z);
+		//ROS_INFO("ODOMGLOBAL: vxyz %.2f %.2f %.2f, yaw: %.2f vyaw: %.2f dt: %.2f",vx,vy,vz,rpy.z,vyaw,dt);
     if(!std::isnan(vz) && !std::isnan(vy) && !std::isnan(vx) && !std::isnan(vyaw)){
       lastyaw = rpy.z;
       vx_que.push(vx);
@@ -133,11 +140,12 @@ int main(int argc, char **argv){
         vy_sum -= vy_que.front();
         vz_sum -= vz_que.front();
         vyaw_sum -= vyaw_que.front();
-        if(!std::isnan(vx_sum) && !std::isnan(vy_sum) && !std::isnan(vz_sum) && !std::isnan(vyaw_sum)){
+        if(std::isnan(vx_sum) || std::isnan(vy_sum) || std::isnan(vz_sum) || std::isnan(vyaw_sum)){
+					ROS_ERROR("RESET: %.2f %.2f %.2f %.2f",vx_sum,vy_sum,vz_sum,vyaw_sum);
           vx_sum = vy_sum = vz_sum = vyaw_sum = 0;
         }
-        odom_global.twist.twist.linear.x = vx_sum / que_size;
-        odom_global.twist.twist.linear.y = vy_sum / que_size;
+        odom_global.twist.twist.linear.x  = vx_sum / que_size;
+        odom_global.twist.twist.linear.y  = vy_sum / que_size;
         odom_global.twist.twist.linear.z  = vz_sum / que_size;
         odom_global.twist.twist.angular.z = vyaw_sum / que_size;
 
@@ -151,16 +159,20 @@ int main(int argc, char **argv){
         odom_global.pose.pose.position.x = tf.transform.translation.x;
         odom_global.pose.pose.position.y = tf.transform.translation.y;
         odom_global.pose.pose.position.z = tf.transform.translation.z;
-        tf_future.transform.translation.x = odom_global.twist.twist.linear.x * 3.0;
-        tf_future.transform.translation.y = odom_global.twist.twist.linear.y * 3.0;
-        tf_future.transform.translation.z = odom_global.twist.twist.linear.z * 3.0;
+		//		ROS_INFO("Pos: %.0f %.0f %.0f - vxyz_ave: (%.2f %.2f %.2f) vxyz: %.2f %.2f %.2f posfuture: %.2f %.2f %.2f",odom_global.pose.pose.position.x,odom_global.pose.pose.position.y,odom_global.pose.pose.position.z,				odom_global.twist.twist.linear.x,odom_global.twist.twist.linear.y,odom_global.twist.twist.linear.z,vx,vy,vz,tf_future.transform.translation.x,tf_future.transform.translation.y,tf_future.transform.translation.z);
+				tf_future.transform.translation.x = odom_global.pose.pose.position.x + odom_global.twist.twist.linear.x * par_dt_forward;
+				tf_future.transform.translation.y = odom_global.pose.pose.position.y + odom_global.twist.twist.linear.y * par_dt_forward;
+				tf_future.transform.translation.z = odom_global.pose.pose.position.z + odom_global.twist.twist.linear.z * par_dt_forward;
+
         if(std::isnan(tf_future.transform.translation.x) || std::isnan(tf_future.transform.translation.y) || std::isnan(tf_future.transform.translation.z)){
-          ROS_ERROR("TF: std_isnan: odomglobal:  %.2f %.2f %.2f %.2f, vsum xyz: %.2f %.2f %.2f %.2f", odom_global.twist.twist.linear.x, odom_global.twist.twist.linear.y,
-           odom_global.twist.twist.linear.z,odom_global.twist.twist.angular.z,vx_sum,  vy_sum,  vz_sum,  vyaw_sum);
+          ROS_ERROR("TF: std_isnan: odomglobal:  %.2f %.2f %.2f %.2f, vsum xyz: %.2f %.2f %.2f %.2f", odom_global.twist.twist.linear.x, odom_global.twist.twist.linear.y,odom_global.twist.twist.linear.z,odom_global.twist.twist.angular.z,vx_sum,vy_sum,vz_sum,vyaw_sum);
         }
         tf_future.transform.rotation = tf::createQuaternionMsgFromYaw(constrainAngle(rpy.z + odom_global.twist.twist.angular.z));
         odom_global.pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0,-incl,hdng);
+				tf_future.transform.rotation 			= tf::createQuaternionMsgFromYaw(hdng);
+				tf_future.header.stamp = odom_global.header.stamp = ros::Time::now();
         pub_global_odom.publish(odom_global);
+				tf_b.sendTransform(tf_future);
       }
     }
   }

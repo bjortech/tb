@@ -66,9 +66,9 @@ int oct_xmin,oct_ymin,oct_zmin,oct_xmax,oct_ymax,oct_zmax,oct_range_x,oct_range_
 double par_dz,par_collision_radius;
 std::vector<float> zmin_vec;
 float zmin_ave;
-int que_size = 10;
+int que_size = 5;
 float pos_z_min = 5.0;
-std::vector <geometry_msgs::PointStamped> obs_vec;
+std::vector <geometry_msgs::PointStamped> obs_xy_vec,obs_z_vec;
 ros::Publisher pub_zmin;
 float saturate(float val, float max){
   if((std::isnan(val)) || (std::isinf(val)))
@@ -127,21 +127,25 @@ void heightpos_cb(const sensor_msgs::PointCloud::ConstPtr& msg){
 	pub_zmin.publish(zmin_msg);
 	//ROS_INFO("pos_z_min: %.0f",pos_z_min);
 }
-bool is_in_vector(geometry_msgs::PointStamped pnt){
+bool is_in_vector(std::vector<geometry_msgs::PointStamped> obs_vec, geometry_msgs::PointStamped obs){
 	for(int  i = 0; i < obs_vec.size(); i++){
-		if(get_dst3d(obs_vec[i].point,pnt.point) < 1.0)
+		if(get_dst3d(obs_vec[i].point,obs.point) < 1.0)
 			return true;
 	}
 	return false;
 }
-void closest_obstacle_cb(const geometry_msgs::PointStamped::ConstPtr& msg){
-	if(!is_in_vector(*msg))
-		obs_vec.push_back(*msg);
+void obstacle_xy_cb(const geometry_msgs::PointStamped::ConstPtr& msg){
+	if(!is_in_vector(obs_xy_vec,*msg))
+		obs_xy_vec.push_back(*msg);
+}
+void obstacle_z_cb(const geometry_msgs::PointStamped::ConstPtr& msg){
+	if(!is_in_vector(obs_z_vec,*msg))
+		obs_z_vec.push_back(*msg);
 }
 void update_pos(){
   geometry_msgs::TransformStamped transformStamped;
   try{
-    transformStamped = tfBuffer.lookupTransform("map","base_perfect_alt",
+    transformStamped = tfBuffer.lookupTransform("map","base_future",
                              ros::Time(0));
   }
   catch (tf2::TransformException &ex) {
@@ -151,17 +155,6 @@ void update_pos(){
   cmd_pos.x = transformStamped.transform.translation.x;
   cmd_pos.y = transformStamped.transform.translation.y;
   cmd_pos.z = transformStamped.transform.translation.z;
-
-}
-void odomglobal_cb(const nav_msgs::Odometry::ConstPtr& msg){
-  if((ros::Time::now() - odom_global.header.stamp).toSec() > 0.1){
-    odom_global = *msg;
-    if(!std::isnan(odom_global.twist.twist.linear.x) && !std::isnan(odom_global.twist.twist.linear.y) && !std::isnan(odom_global.twist.twist.linear.z)){
-      forward_point.x = odom_global.twist.twist.linear.x * 2.0;//  pos.x + 15 * cos(vlp_rpy.z);
-      forward_point.y = odom_global.twist.twist.linear.y * 2.0;// pos.y + 15 * sin(vlp_rpy.z);
-      forward_point.z = odom_global.twist.twist.linear.z * 2.0;// pos.y + 15 * sin(vlp_rpy.z);
-    }
-  }
 }
 /*
 void check_collision(){
@@ -186,13 +179,14 @@ int main(int argc, char** argv)
 	tf2_ros::TransformListener tf2_listener(tfBuffer);
 
 	ros::Subscriber s1 = nh.subscribe("/tb_heightmapper/heightcloud_around_pos_ordered",1,heightpos_cb);
-	ros::Subscriber s2 = nh.subscribe("/tb_autoevade/closest_obstacle",1,closest_obstacle_cb);
-	ros::Subscriber s3 = nh.subscribe("/tb_autoevade/odom_global",1,odomglobal_cb);
-	pub_zmin  = nh.advertise<std_msgs::Float64>("/tb_autoevade/z_min",10);
+	ros::Subscriber s2 = nh.subscribe("/tb_autoevade/obstacle_xy",1,obstacle_xy_cb);
+	ros::Subscriber s3 = nh.subscribe("/tb_autoevade/obstacle_z",1,obstacle_z_cb);
+//	ros::Subscriber s4 = nh.subscribe("/tb_autoevade/odom_global",1,odomglobal_cb);
+	pub_zmin = nh.advertise<std_msgs::Float64>("/tb_autoevade/z_min",10);
 
 	ros::Rate rate(1.0);
 	while(ros::ok()){
-		//update_pos();
+		update_pos();
 		//cmd_x = -(collision_object.point.x - pos.x);
 		//cmd_y = -(collision_object.point.y - pos.y);
 		//cmd_z = fmax(collision_object.point.z+2.0,cmd_pos.z);
