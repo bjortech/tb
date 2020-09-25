@@ -9,4 +9,4 @@ cd ~/tb_ws
 catkin_make
 mkdir -p ~/brain
 source ~/tb_ws/devel/setup.bash
-roslaunch tb_bringup freak.launch
+roslaunch tb_bringup freak5_without_premade_octomap.launch
