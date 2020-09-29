@@ -8,4 +8,4 @@ git clone -b freak_del3 https://github.com/bjortech/tb
 cd ~/tb_ws
 catkin_make
 source ~/tb_ws/devel/setup.bash
-roslaunch tb_bringup freak.launch
+roslaunch tb_bringup freak3_without_premade_octomap.launch
