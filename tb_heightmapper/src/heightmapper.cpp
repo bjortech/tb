@@ -219,7 +219,7 @@ void set_sidelength_cb(const std_msgs::Float64::ConstPtr& msg){
 void update_pos(){
 	geometry_msgs::TransformStamped transformStamped;
 	try{
-		transformStamped = tfBuffer.lookupTransform("map","base_future",
+		transformStamped = tfBuffer.lookupTransform("map","base_stabilized",
 														 ros::Time(0));
 	}
 	catch (tf2::TransformException &ex) {
