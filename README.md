@@ -3,6 +3,9 @@ Generic Highlevel Autonomy Framework
 
 # Freak introduksjon!
 
+ Youtube: Babling om pakken(e): 
+ https://youtu.be/O9fPlX9mY20  
+ 
 Dette er det minimale systemet som må til for å få roboten til å flytte seg rundt i en simpel simulering. Her brukes fundamentale robotikk-komponenter som finnes i roboter over hele verden. 
 
 # Automatisert installasjon av ROS && bygging/sourcing av denne branch: 
