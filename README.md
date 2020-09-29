@@ -2,6 +2,8 @@
 Generic Highlevel Autonomy Framework 
 
 # Freak introduksjon!
+youtube forklaring (improvisert):  
+https://youtu.be/ahwUmXHa8D0 
 
 Dette er det minimale systemet som må til for å få roboten til å flytte seg rundt i en simpel simulering. Her brukes fundamentale robotikk-komponenter som finnes i roboter over hele verden. 
 
