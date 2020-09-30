@@ -54,7 +54,7 @@ target_link_libraries(tb_abmap_frontier_node
     ${catkin_LIBRARIES}
     ${OpenCV_LIBRARIES})
 
-add_executable(tb_abmap_elevator_node src/elevator.cpp)
-target_link_libraries(tb_abmap_elevator_node
+add_executable(tb_abstractmap_node src/abstractmap.cpp)
+target_link_libraries(tb_abstractmap_node
     ${catkin_LIBRARIES}
 		${OpenCV_LIBRARIES})

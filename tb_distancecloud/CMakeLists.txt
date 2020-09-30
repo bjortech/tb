@@ -53,3 +53,11 @@ add_executable(tb_distancecloud2d_node src/distancecloud2d.cpp)
 target_link_libraries(tb_distancecloud2d_node
 		${catkin_LIBRARIES}
 		${OpenCV_LIBRARIES})
+add_executable(tb_distancepoly2d_node src/distancepoly2d.cpp)
+target_link_libraries(tb_distancepoly2d_node
+		${catkin_LIBRARIES}
+		${OpenCV_LIBRARIES})
+add_executable(tb_distancetargets2d_node src/distancetargets2d.cpp)
+target_link_libraries(tb_distancetargets2d_node
+		${catkin_LIBRARIES}
+		${OpenCV_LIBRARIES})

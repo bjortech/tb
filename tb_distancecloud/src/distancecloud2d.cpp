@@ -378,7 +378,7 @@ int main(int argc, char** argv)
 	/assembled_cloud2 - all points seen over an interval of time
 	*/
 	ros::Subscriber s1  = nh.subscribe("/octomap_full",1,octomapCallback);
-	ros::Subscriber s2  = nh.subscribe("/tb_edto/poly_cleared",1,poly_cleared_cb);
+	ros::Subscriber s2  = nh.subscribe("/tb_distancecloud/poly_boundary",1,poly_cleared_cb);
 	ros::Subscriber s3  = nh.subscribe("/tb_trajectorywriter/visited_poses",1,trajectoryVisitedCallback);
 	ros::Subscriber s4  = nh.subscribe("/assembled_cloud2",1,assembledCloud_cb);
 

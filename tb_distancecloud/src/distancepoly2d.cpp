@@ -59,22 +59,17 @@ shared_ptr<DynamicEDTOctomap> edf_ptr;
 AbstractOcTree* abs_octree;
 shared_ptr<OcTree> octree;
 bool got_map = false;
-ros::Publisher pub_path,pub_poly_cleared,pub_poly_obstacles;
-geometry_msgs::Point pos,last_pos;
-int oct_xmin,oct_ymin,oct_zmin,oct_xmax,oct_ymax,oct_zmax,oct_range_x,oct_range_y,oct_range_z;
-float last_yaw = 0.0;
-int count = 0;
-ros::Time last_sec;
-double par_min_distance,par_maprad,par_dz;
-geometry_msgs::PolygonStamped poly_cleared,poly_obstacles;
-nav_msgs::Path path_raycast;
-bool par_track_only_last;
+int g_oct_xmin,g_oct_ymin,g_oct_zmin,g_oct_xmax,g_oct_ymax,g_oct_zmax,g_oct_range_x,g_oct_range_y,g_oct_range_z;
+double par_collision_radius,par_dz,par_maprad,par_min_distance;
+int par_num_rays;
+bool ready;
 std_msgs::Header hdr(){
   std_msgs::Header header;
   header.frame_id = "map";
   header.stamp    = ros::Time::now();
   return header;
 }
+
 float get_dst2d(geometry_msgs::Point p2, geometry_msgs::Point p1){
   return(sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2)));
 }
@@ -95,76 +90,81 @@ double get_shortest(double target_hdng,double actual_hdng){
 float get_inclination(geometry_msgs::Point p2, geometry_msgs::Point p1){
   return atan2(p2.z - p1.z,get_dst2d(p2,p1));
 }
-bool update_edto_bbvec(std::vector<float> bbvec,float collision_radius){
+std::vector<float> getBoundingBoxAroundPoint(geometry_msgs::Point midpoint,float max_ray_len){
+	std::vector<float> bbvec;
+	bbvec.resize(6);
+	bbvec[0] = midpoint.x - max_ray_len;
+	bbvec[1] = midpoint.y - max_ray_len;
+	bbvec[2] = midpoint.z - par_dz;
+	bbvec[3] = midpoint.x + max_ray_len;
+	bbvec[4] = midpoint.y + max_ray_len;
+	bbvec[5] = midpoint.z +	par_dz;
+	return bbvec;
+}
+bool updateOctomapEDTO(std::vector<float> bbvec,float collision_radius){
 	//Updates boundaries based on desired points (bbvec) and octomap extents
   geometry_msgs::Point bbmin_octree,bbmax_octree;
   octree.get()->getMetricMin(bbmin_octree.x,bbmin_octree.y,bbmin_octree.z);
   octree.get()->getMetricMax(bbmax_octree.x,bbmax_octree.y,bbmax_octree.z);
   octomap::point3d boundary_min(fmax(bbvec[0],bbmin_octree.x),fmax(bbvec[1],bbmin_octree.y),fmax(bbvec[2],bbmin_octree.z));
   octomap::point3d boundary_max(fmin(bbvec[3],bbmax_octree.x),fmin(bbvec[4],bbmax_octree.y),fmin(bbvec[5],bbmax_octree.z));
-
+	ROS_INFO("DistancePoly2D-bbvec: %.0f %.0f %.0f %.0f %.0f %.0f",bbvec[0],bbvec[1],bbvec[2],bbvec[3],bbvec[4],bbvec[5]);
+	ROS_INFO("DistancePoly2D-bboct: %.0f %.0f %.0f %.0f %.0f %.0f",bbmin_octree.x,bbmin_octree.y,bbmin_octree.z,bbmax_octree.x,bbmax_octree.y,bbmax_octree.z);
+	ROS_INFO("DistancePoly2D-bbout: %.0f %.0f %.0f %.0f %.0f %.0f",boundary_min.x(),boundary_min.y(),boundary_min.z(),boundary_max.x(),boundary_max.y(),boundary_max.z());
   edf_ptr.reset (new DynamicEDTOctomap(collision_radius,octree.get(),
           boundary_min,
           boundary_max,
           false));
   edf_ptr.get()->update();
-  oct_xmin    = int(round(boundary_min.x()))+1;  oct_ymin    = int(round(boundary_min.y()))+1; oct_zmin    = int(round(boundary_min.z()))+1;
-  oct_xmax    = int(round(boundary_max.x()))-1;  oct_ymax    = int(round(boundary_max.y()))-1; oct_zmax    = int(round(boundary_max.z()))-1;
-  oct_range_x = oct_xmax - oct_xmin;           	 oct_range_y = oct_ymax - oct_ymin;    				oct_range_z = oct_zmax - oct_zmin;
-	int vol = oct_range_x*oct_range_y*oct_range_z;
+  g_oct_xmin    = int(round(boundary_min.x()))+1;  g_oct_ymin    = int(round(boundary_min.y()))+1; g_oct_zmin    = int(round(boundary_min.z()))+1;
+  g_oct_xmax    = int(round(boundary_max.x()))-1;  g_oct_ymax    = int(round(boundary_max.y()))-1; g_oct_zmax    = int(round(boundary_max.z()))-1;
+  g_oct_range_x = g_oct_xmax - g_oct_xmin;           	 g_oct_range_y = g_oct_ymax - g_oct_ymin;    				g_oct_range_z = g_oct_zmax - g_oct_zmin;
+	int vol = g_oct_range_x*g_oct_range_y*g_oct_range_z;
   if(vol <= 0)
 		return false;
 	return true;
 }
 
 bool isPointInOctomap(Eigen::Vector3f vec){
-	if(vec.x() > float(oct_xmin) && vec.y() > float(oct_ymin)
-	&& vec.x() < float(oct_xmax) && vec.y() < float(oct_ymax))
+	if(vec.x() > float(g_oct_xmin) && vec.y() > float(g_oct_ymin)
+	&& vec.x() < float(g_oct_xmax) && vec.y() < float(g_oct_ymax))
 		return true;
 	else
 		return false;
 }
-geometry_msgs::PolygonStamped raycastPolyClearedFromMidPoint(geometry_msgs::Point midpoint,float collision_radius){
-	ROS_INFO("raycast_circle_edto");
-	//This function takes origo and collision_radius
-	int num_rays 		= 32;
+geometry_msgs::PolygonStamped raycastPolyClearedFromMidPoint(geometry_msgs::Point midpoint,int num_rays,float max_ray_len,float obstacle_distance_cutoff){
 	float rads_pr_i = 2*M_PI / num_rays;
-	/*Poly_cleared will create the polygon that displays free space at fixed size (like sensor_msgs::LaserScan)
-	* Poly_obstacles illustrate the points that resulted in breaking from the raycast function
-	* Path displays points along the raycast and the Quaternion represents the rotation from point_of_ray(stridep) to obstacle_point
+	/*
+	* Create cleared polygon around point
 	*/
 	geometry_msgs::PolygonStamped polyout;
 	polyout.polygon.points.resize(num_rays);
 	polyout.header 	= hdr();
-	ps.header = hdr();
-	geometry_msgs::Point32 closest_obstacle;
 	for(int i  = 0; i < num_rays; i++){
 		Eigen::Vector3f pnt1_vec(midpoint.x,midpoint.y,midpoint.z);
-		Eigen::Vector3f pnt2_vec(midpoint.x+par_maprad*cos(i*rads_pr_i),
-													   midpoint.y+par_maprad*sin(i*rads_pr_i),
+		Eigen::Vector3f pnt2_vec(midpoint.x+max_ray_len*cos(i*rads_pr_i),
+													   midpoint.y+max_ray_len*sin(i*rads_pr_i),
 														 midpoint.z);
-		if(isPointInOctomap(pnt2_vec)){
-			Eigen::Vector3f cur_vec = pnt1_vec;
-			Eigen::Vector3f stride_vec = (pnt2_vec - pnt1_vec).normalized();
-			float cur_ray_len = 0;
-			float distance	  = collision_radius;
-			//RAYCAST LOOP
-			while(cur_ray_len < par_maprad && distance > par_min_distance){
+		Eigen::Vector3f cur_vec = pnt1_vec;
+		Eigen::Vector3f stride_vec = (pnt2_vec - pnt1_vec).normalized();
+		float cur_ray_len = 0;
+		float distance	  = obstacle_distance_cutoff+5;
+		//RAYCAST LOOP
+		while(cur_ray_len < max_ray_len && distance > obstacle_distance_cutoff){
+			if(cur_vec.x() > float(g_oct_xmin) && cur_vec.y() > float(g_oct_ymin)
+			&& cur_vec.x() < float(g_oct_xmax) && cur_vec.y() < float(g_oct_ymax)){
+				//	if(isPointInOctomap(pnt2_vec)){
 				cur_vec 		= cur_vec + stride_vec;
 				cur_ray_len = (cur_vec-pnt1_vec).norm();
-				//CHECK that point is within octomap boundaries - looking up a point that's not available causes crash
-
-					point3d stridep(cur_vec.x(),cur_vec.y(),cur_vec.z());
-					distance = edf_ptr.get()->getDistance(stridep);
-				}
-				else
-					break;
+				point3d stridep(cur_vec.x(),cur_vec.y(),cur_vec.z());
+				distance = edf_ptr.get()->getDistance(stridep);
 			}
+			else
+				break;
 		}
-
 		polyout.polygon.points[i].x = cur_vec.x();
 		polyout.polygon.points[i].y = cur_vec.y();
-		polyout.polygon.points[i].z = midpoint.z;
+		polyout.polygon.points[i].z = cur_vec.z();
 	}
 	return polyout;
 }
@@ -183,70 +183,55 @@ bool outside_octomap(std::vector<float> bbvec){
 	else
 		return false;
 }
-void update_pos(){
+geometry_msgs::Point getPointInMap(std::string frame){
 	geometry_msgs::TransformStamped transformStamped;
 	try{
-		transformStamped = tfBuffer.lookupTransform("map","base_perfect_alt",
+		transformStamped = tfBuffer.lookupTransform("map",frame,
 														 ros::Time(0));
 	}
 	catch (tf2::TransformException &ex) {
 		ROS_WARN("%s",ex.what());
 		ros::Duration(1.0).sleep();
 	}
-	pos.x = transformStamped.transform.translation.x;
-	pos.y = transformStamped.transform.translation.y;
-	pos.z = transformStamped.transform.translation.z;
+	geometry_msgs::Point pout;
+	pout.x = transformStamped.transform.translation.x;
+	pout.y = transformStamped.transform.translation.y;
+	pout.z = transformStamped.transform.translation.z;
+	return pout;
 }
-
 void octomap_callback(const octomap_msgs::Octomap& msg){
   abs_octree=octomap_msgs::fullMsgToMap(msg);
   octree.reset(dynamic_cast<octomap::OcTree*>(abs_octree));
   got_map = true;
 }
+
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "tb_edto_poly_auto2_node");
+  ros::init(argc, argv, "tb_distancepoly2d_node");
 	ros::NodeHandle nh;
 	ros::NodeHandle private_nh("~");
-	private_nh.param("only_track_last_obstacle", par_track_only_last, false);
-	private_nh.param("update_area_sidelength", par_maprad, 30.0);
 	private_nh.param("update_area_z_radius", par_dz, 1.5);
-	private_nh.param("obstacle_distance_cutoff", par_min_distance, 3.0);
-	poly_obstacles.header = hdr();
-	poly_cleared.header 	= hdr();
-	path_raycast.header   = hdr();
+	private_nh.param("maximum_raylength", par_maprad, 50.0);
+	private_nh.param("minimum_obstacle_clearing", par_min_distance, 3.0);
+	private_nh.param("number_of_rays", par_num_rays, 32);
+
 	tf2_ros::TransformListener tf2_listener(tfBuffer);
 
 	ros::Subscriber s1  = nh.subscribe("/octomap_full",1,octomap_callback);
-	pub_poly_cleared   	= nh.advertise<geometry_msgs::PolygonStamped>("/tb_edto/poly_cleared",100);
-	pub_poly_obstacles  = nh.advertise<geometry_msgs::PolygonStamped>("/tb_edto/poly_obstacles",100);
-	pub_path  					= nh.advertise<nav_msgs::Path>("/tb_edto/path_raycast",100);
+	ros::Publisher pub_poly_cleared	= nh.advertise<geometry_msgs::PolygonStamped>("/tb_distancecloud/poly_boundary",100);
 	ros::Rate rate(1.0);
+	float collision_radius = par_dz +	par_min_distance;
+	int z_count = 0;
+	ready = true;
 	while(ros::ok()){
-
-		float yaw = tf::getYaw(transformStamped.transform.rotation);
 		if(got_map){
-				std::vector<float> bbvec;
-				bbvec.resize(6);
-				bbvec[0] = pos.x - par_maprad;
-				bbvec[1] = pos.y - par_maprad;
-				bbvec[2] = altlvl * par_dz - par_dz;
-				bbvec[3] = pos.x + par_maprad;
-				bbvec[4] = pos.y + par_maprad;
-				bbvec[5] = altlvl * par_dz + par_dz;
-				float collision_radius = 10;
-				if(!outside_octomap(bbvec)){
-					if(update_edto_bbvec(bbvec,collision_radius))
-							raycast_circle_edto(pos,collision_radius);
-				}
+			geometry_msgs::Point midpoint = getPointInMap("base_perfect_alt");
+			std::vector<float> bbvec = getBoundingBoxAroundPoint(midpoint,par_maprad+collision_radius);
+			if(!outside_octomap(bbvec)){
+				if(updateOctomapEDTO(bbvec,collision_radius))
+					pub_poly_cleared.publish(raycastPolyClearedFromMidPoint(midpoint,par_num_rays,par_maprad,collision_radius));
 			}
 		}
-	}
-		update_pos();
-		if(poly_cleared.polygon.points.size() > 0){
-			pub_poly_obstacles.publish(poly_obstacles);
-		}
-
 		rate.sleep();
 		ros::spinOnce();
 	}

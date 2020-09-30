@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 	<node name="tb_distancecloud2d_node"  pkg="tb_distancecloud" type="tb_distancecloud2d_node" respawn="true" output="screen">
-		<param name="update_area_z_radius" 		 	 type="double" value="1.5" />
+		<param name="update_area_z_radius" 	 type="double" value="1.5" />
 		<param name="collision_radius" 		 	 type="double" value="15" />
-		<param name="normalize_RGB" 		 	 type="bool" value="true" />
+		<param name="normalize_RGB" 		 	 	 type="bool" value="true" />
+	</node>
+	<node name="tb_distancepoly2d_node"  pkg="tb_distancecloud" type="tb_distancepoly2d_node" respawn="true" output="screen">
+		<param name="update_area_z_radius" 		 	type="double" value="1.5" />
+		<param name="maximum_raylength" 		 	  type="double" value="50" />
+		<param name="minimum_obstacle_clearing" type="double" value="1.5" />
+		<param name="number_of_rays" 		 	 			type="int" value="32" />
+	</node>
+	<node name="tb_distancetargets2d_node"  pkg="tb_distancecloud" type="tb_distancetargets2d_node" respawn="true" output="screen">
+		<param name="grid_sidelength" type="double" value="5.0" />
+		<param name="area_sidelength" type="double" value="1000" />
 	</node>
 </launch>

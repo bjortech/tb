@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 	<!--Dette er den normale måten å launche flere forskjellige moduler på. Ved å bruke et hierarki av "includes" får man oversiktlig og fleksibel konfigurasjon-->
-	<include file="$(find tb_cmd)/launch/cmd.launch"/>
-	<include file="$(find tb_bringup)/launch/include/mb.launch.xml"/>
-	<include file="$(find tb_robot)/launch/robot.launch"/>
-	<include file="$(find tb_simulate_hardware)/launch/simulate_hardware.launch"/>
 
 	<!--En av disse filene må kommenteres ut. Den ene bruker et bilde til å konstruere omkringliggende verden som ville blitt plukket opp av sensor. Den adnre er litt "juks", da den innebærer bruken av en ferdig octomap ved launch. -->
 	<!--include file="$(find tb_simulate_perception)/launch/premade_octomap.launch"/-->
-	<include file="$(find tb_simulate_perception)/launch/without_premade_octomap.launch"/>
-	<include file="$(find tb_bringup)/launch/include/octomap.launch.xml"/>
 
-	<include file="$(find tb_costmap)/launch/costmap.launch"/>
-
-	<include file="$(find tb_assembly)/launch/assembly.launch"/>
 	<include file="$(find tb_heightmapper)/launch/heightmapper.launch"/>
 
-	<node name="map_server" pkg="map_server" type="map_server" args="$(find tb_bringup)/maps/map.yaml" />
 	<include file="$(find tb_autoevade)/launch/autoevade.launch"/>
 	<include file="$(find tb_edtoauto)/launch/edtoauto.launch"/>
 
 	<include file="$(find tb_trajectorywriter)/launch/trajectorywriter.launch"/>
 	<include file="$(find tb_distancecloud)/launch/distancecloud.launch"/>
-	<include file="$(find tb_abmap)/launch/abmap.launch"/>
-	<include file="$(find tb_mbclient)/launch/mbclient.launch"/>
+
 
 	<node pkg="rviz" type="rviz" name="rviz" args="-d $(find tb_bringup)/rviz.rviz"/>
 </launch>
